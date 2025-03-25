@@ -2,7 +2,7 @@
   <div>
     <NuxtRouteAnnouncer />
     <div class="p-4">
-      Hi world!
+      Hi world!?!
       <div class="btn btn-secondary btn-sm">Click me!</div>
     </div>
     <NuxtWelcome />
