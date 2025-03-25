@@ -1,9 +1,9 @@
 <template>
   <div>
     <NuxtRouteAnnouncer />
-    <div class="bg-red-400">
-      Hello
-      <div class="btn btn-primary">World</div>
+    <div class="p-4">
+      Hello world
+      <div class="btn btn-secondary btn-sm">Click me!</div>
     </div>
     <NuxtWelcome />
   </div>
