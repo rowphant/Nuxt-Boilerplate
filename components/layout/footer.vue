@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import Menu from "./menu.vue";
+import Menu from "@/components/menu.vue";
 
 const menus = [
   {
