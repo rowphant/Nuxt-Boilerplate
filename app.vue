@@ -1,10 +1,7 @@
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <div class="p-4">
-      Hello world
-      <div class="btn btn-secondary btn-sm">Click me!</div>
-    </div>
-    <NuxtWelcome />
-  </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
+
+<script lang="ts"></script>
