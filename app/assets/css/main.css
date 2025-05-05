@@ -1,0 +1,62 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: "Public Sans", sans-serif;
+
+  --color-green-50: #effdf5;
+  --color-green-100: #d9fbe8;
+  --color-green-200: #b3f5d1;
+  --color-green-300: #75edae;
+  --color-green-400: #00dc82;
+  --color-green-500: #00c16a;
+  --color-green-600: #00a155;
+  --color-green-700: #007f45;
+  --color-green-800: #016538;
+  --color-green-900: #0a5331;
+  --color-green-950: #052e16;
+
+  --color-navbar: var(--color-slate-300);
+  --color-error: var(--color-red-500);
+  --ui-error: var(--color-red-500);
+}
+
+.dark {
+  --color-navbar: var(--color-slate-950);
+}
+
+.loader {
+  margin: 4rem;
+  position: relative;
+  border: 5px solid var(--ui-color-primary-900);
+  /* border-top: 5px solid transparent; */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  place-self: center;
+  /* animation: spin 2s linear infinite; */
+  &::after {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    content: "";
+    border: 5px solid transparent;
+    border-top: 5px solid var(--ui-color-primary-500);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1.5s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  /* 50% {
+    transform: rotate(180deg);
+  } */
+  100% {
+    transform: rotate(360deg);
+  }
+}
