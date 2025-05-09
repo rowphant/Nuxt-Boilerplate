@@ -8,5 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import UserDetails from "~/components/User.Account.vue";
+import UserAccount from "~/components/User.Account.vue";
+
+definePageMeta({
+  layout: 'auth'
+})
 </script>

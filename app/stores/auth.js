@@ -2,13 +2,9 @@ import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    isLoggedIn: false,
+    isLoggedIn: null,
     token: null,
-    user: null,
-    confirmed: null,
-    // authenticated: false,
-    loading: null,
-    details: {
+    user: {
       id: null,
       username: null,
       name: null,
@@ -24,46 +20,50 @@ export const useAuthStore = defineStore("auth", {
       capabilities: null,
       extra_capabilities: null,
       avatar_urls: null,
+      account_activated: null,
+      profile_image: null,
     },
+    loading: null,
   }),
 
   actions: {
     async login(username, password) {
       const { $config } = useNuxtApp();
       const apiBase = $config.public.apiBase;
-      const response = await fetch(
-        apiBase + "/wp-json/jwt-auth/v1/token",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            username,
-            password,
-          }),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(apiBase + "/wp-json/jwt-auth/v1/token", {
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
 
       localStorage.removeItem("token");
 
-      if (response.ok) {
-        const data = await response.json();
+      const data = await response.json();
 
+      if (response.ok) {
         this.isLoggedIn = true;
         this.token = data.token;
-        this.user = data.user_display_name;
+        // this.user = data.user_display_name;
         localStorage.setItem("token", data.token);
 
         await this.getUserDetails();
       }
+
+      return data;
     },
 
     async getUserDetails() {
       const { $config } = useNuxtApp();
       const apiBase = $config.public.apiBase;
       const token = localStorage.getItem("token");
+
+      // Fields to fetch
       const fields = [
         "id",
         "username",
@@ -80,9 +80,12 @@ export const useAuthStore = defineStore("auth", {
         "capabilities",
         "extra_capabilities",
         "avatar_urls",
+        "account_activated",
+        "profile_image",
       ];
 
       if (token) {
+        this.loading = true;
         const response = await $fetch(
           `${apiBase}/wp-json/wp/v2/users/me?${fields
             .map((field) => `_fields[]=${field}`)
@@ -96,8 +99,10 @@ export const useAuthStore = defineStore("auth", {
         );
 
         if (response.id) {
-          this.details = response;
+          this.user = response;
         }
+
+        this.loading = false;
       }
     },
 
@@ -131,14 +136,15 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async logout() {
-      console.log("logging out");
-      this.isLoggedIn = false;
-      this.token = null;
-      this.user = null;
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-
       navigateTo("/");
+
+      setTimeout(() => {
+        this.isLoggedIn = false;
+        this.token = null;
+        this.user = null;
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }, 500);
     },
 
     async validateUser() {
@@ -163,6 +169,8 @@ export const useAuthStore = defineStore("auth", {
           this.token = token;
 
           await this.getUserDetails();
+
+          return true;
         } else {
           console.error("Error logging in:", response.status);
           this.logout();
@@ -175,7 +183,7 @@ export const useAuthStore = defineStore("auth", {
         this.loading = false;
       }
     },
-    
+
     async register(username, email, password) {
       this.loading = true;
       const { $config } = useNuxtApp();
@@ -207,6 +215,75 @@ export const useAuthStore = defineStore("auth", {
       } catch (error) {
         this.loading = false;
         return error.data;
+      }
+    },
+    async confirmUser(authCode) {
+      const { $config } = useNuxtApp();
+      const apiBase = $config.public.apiBase;
+      const response = await $fetch(apiBase + "/wp-json/wp/v2/confirm-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code: authCode }),
+      });
+
+      return response;
+    },
+    async uploadFile(file) {
+      const { $config } = useNuxtApp();
+      const apiBase = $config.public.apiBase;
+      const token = localStorage.getItem("token");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await $fetch(apiBase + "/wp-json/wp/v2/media", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (response?.id) {
+          return response;
+        } else {
+          console.error("Error uploading file:", response.status);
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    },
+
+    /**
+     * Upload user image
+     */
+    async uploadUserImage(formData) {
+      const { $config } = useNuxtApp();
+      const apiBase = $config.public.apiBase;
+      const token = localStorage.getItem("token");
+
+      try {
+        const response = await fetch(apiBase + "/wp-json/wp/v2/user-image", {
+          method: "POST",
+          // credentials: "include", // important if WordPress uses cookies (like for logged-in users)
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const error = await response.text();
+          throw new Error(`Upload failed: ${error}`);
+        }
+
+        const data = await response.json();
+        console.log("Upload successful:", data);
+      } catch (error) {
+        console.error("Error uploading image:", error);
       }
     },
   },

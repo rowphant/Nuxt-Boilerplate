@@ -3,8 +3,8 @@
     <!-- Header -->
     <Header :mainNav="mainNav"/>
     <!-- Content -->
-    <div class="grow">
-      <div class="container mx-auto">
+    <div class="grow flex">
+      <div class="container mx-auto grow place-content-center">
         <slot />
       </div>
     </div>
