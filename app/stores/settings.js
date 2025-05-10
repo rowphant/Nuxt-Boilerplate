@@ -2,11 +2,13 @@ import { defineStore } from "pinia";
 
 export const useGlobalStore = defineStore("global", {
   state: () => ({
+    loading: null,
     settings: null,
   }),
 
   actions: {
     async getSettings(username, password) {
+      this.loading = true;
       const { $config } = useNuxtApp();
       const apiBase = $config.public.apiBase;
       const response = await fetch(apiBase + "/wp-json/headless-wp/v1/options", {
@@ -23,6 +25,7 @@ export const useGlobalStore = defineStore("global", {
         this.settings = data;
       }
 
+      this.loading = false;
       return data;
     },
   },

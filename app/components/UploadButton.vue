@@ -1,15 +1,15 @@
 <template>
-  <div class="w-full">
+  <div class="w-full flex flex-col gap-2">
     <div
       v-if="props.loading"
-      class="w-full h-full aspect-square bg-slate-800 btn-ghost p-2 border border-dashed border-neutral-500 flex flex-col justify-center items-center text-center rounded-md"
+      class="w-full h-full aspect-square bg-slate-800 btn-ghost p-2 border border-dashed border-neutral-500 flex flex-col justify-center items-center text-center rounded-lg"
     >
       <span className="loading loading-spinner loading-lg"></span>
       <div>Files are beeing uploaded...</div>
     </div>
     <button
       v-if="!selectedFiles && !loading"
-      :class="`btn bg-slate-800 btn-ghost p-2 w-full h-full aspect-square rounded-md border border-dashed border-neutral-500 hover:border-primary focus:border-primary focus:outline-none overflow-hidden`"
+      :class="`btn bg-slate-800 btn-ghost p-2 w-full h-full aspect-square rounded-lg border border-dashed border-neutral-500 hover:border-primary focus:border-primary focus:outline-none overflow-hidden`"
       @click="uploadButtonHandler"
     >
       <div class="flex flex-col items-center gap-6">
@@ -21,7 +21,7 @@
     </button>
     <div
       v-if="selectedFiles && !loading"
-      :class="`p-4 btn_ rounded-btn bg-slate-800 p-1 w-full h-full aspect-square border border-dashed border-neutral-500 hover:border-primary focus:border-primary focus:outline-none overflow-hidden`"
+      :class="`p-4 btn_ rounded-lg bg-slate-800 p-1 w-full h-full aspect-square border border-dashed border-neutral-500 hover:border-primary focus:border-primary focus:outline-none overflow-hidden`"
     >
       <div
         class="w-full flex flex-col items-center justify-center gap-2 h-full"
@@ -45,28 +45,31 @@
             </div>
           </li>
         </ul>
-        <div class="flex flex-row gap-1 join w-full">
-          <UButton
-            @click="onSubmitHandler"
-            class="flex-grow join-item btn btn-outline_ btn-success btn-circle font-normal"
-            aria-label="Upload files"
-            variant="subtle"
-            >Upload
-          </UButton>
-          <UButton
-            @click="resetFiles"
-            class="flex-grow join-item btn btn-outline_ btn-warning btn-circle font-normal"
-            aria-label="Reset selection"
-            variant="subtle"
-            color="warning"
-          >
-            Reset
-          </UButton>
-        </div>
       </div>
     </div>
+    <div
+      v-if="selectedFiles && !loading"
+      class="flex flex-row gap-1 join w-full"
+    >
+      <UButton
+        @click="onSubmitHandler"
+        class="flex-grow join-item btn btn-outline_ btn-success btn-circle font-normal"
+        aria-label="Upload files"
+        variant="subtle"
+        >Upload
+      </UButton>
+      <UButton
+        @click="resetFiles"
+        class="flex-grow join-item btn btn-outline_ btn-warning btn-circle font-normal"
+        aria-label="Reset selection"
+        variant="subtle"
+        color="warning"
+      >
+        Reset
+      </UButton>
+    </div>
     <input
-      multiple
+      :multiple="multiple"
       :disabled="loading"
       type="file"
       accept="image/x-png,image/jpeg"
@@ -83,6 +86,7 @@ import { ref } from "vue";
 const props = defineProps({
   submitHandler: { type: Function, default: () => {} },
   loading: { type: Boolean, default: false },
+  multiple: { type: Boolean, default: false },
 });
 
 const fileInput = ref();
@@ -128,7 +132,7 @@ const resetFiles = () => {
 };
 
 const uploadButtonHandler = () => {
-  !selectedFiles.value && fileInput.value.click();
+  fileInput.value.click();
 };
 
 const onSubmitHandler = async () => {

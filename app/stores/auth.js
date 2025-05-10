@@ -113,7 +113,7 @@ export const useAuthStore = defineStore("auth", {
       const token = localStorage.getItem("token");
       try {
         const response = await $fetch(
-          `${apiBase}/wp-json/wp/v2/users/${user.id}`,
+          `${apiBase}/wp-json/wp/v2/users/${user.id || this.user.id}`,
           {
             method: "POST",
             body: JSON.stringify(user),
@@ -136,13 +136,12 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async logout() {
-      navigateTo("/");
+      navigateTo("/login");
 
       this.isLoggedIn = false;
       this.token = null;
       this.user = null;
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
 
       return true;
     },
@@ -281,7 +280,8 @@ export const useAuthStore = defineStore("auth", {
         }
 
         const data = await response.json();
-        console.log("Upload successful:", data);
+
+        return data;
       } catch (error) {
         console.error("Error uploading image:", error);
       }

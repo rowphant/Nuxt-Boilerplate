@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col justify-center items-center gap-8">
+  <div class="flex flex-col justify-center items-center gap-8">
     <div v-if="!confirmedUser">
       <LoadingIndicator />
     </div>

@@ -30,7 +30,7 @@
       <label class="min-w-[150px]">Profile image</label>
       <img
         class_="cursor-pointer"
-        :src="user.profile_image?.sizes.thumbnail"
+        :src="user.profile_image.sizes?.thumbnail"
       />
       <ul class="opacity-80 text-xs">
         <li

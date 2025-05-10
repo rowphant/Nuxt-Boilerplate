@@ -1,7 +1,7 @@
 <template>
   <div>
     <UDropdownMenu
-      v-if="authStore?.isLoggedIn"
+      v-if="authStore.loading === false && authStore?.user?.id"
       :items="itemsLoggedIn"
       :ui="{
         content: 'w-48',
@@ -10,26 +10,27 @@
       <UButton
         color="neutral"
         variant="outline"
-        :loading="authStore.loading"
+        :loading="authStore.loading !== false"
+        :icon_="!authStore.user.profile_image ? 'mingcute:user-3-fill' : null"
         class="rounded-full cursor-pointer w-10 h-10 place-items-center place-content-center"
       >
-        <div v-if="authStore.user.profile_image">
+        <div v-if="authStore.user.profile_image || authStore.user.avatar_urls">
           <UAvatar
             class_="cursor-pointer"
-            :src="authStore.user.profile_image.sizes.thumbnail"
+            :src="(authStore.user.profile_image.sizes?.thumbnail || authStore.user.avatar_urls?.['96'])"
           />
         </div>
       </UButton>
     </UDropdownMenu>
-
     <UDropdownMenu
-      v-if="!authStore?.isLoggedIn"
+      v-if="!authStore?.user?.id"
       :items="itemsLoggedOut"
       :ui="{
         content: 'w-48',
       }"
     >
       <UButton
+        :loading="authStore.loading !== false"
         icon="mingcute:user-3-line"
         color="neutral"
         variant="outline"
