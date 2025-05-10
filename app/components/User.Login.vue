@@ -49,7 +49,7 @@
             </div>
           </div>
   
-          <div class="text-right text-xs">
+          <div class="text-right text-xs" v-if="useGlobalStore().settings?.reset_password">
             <ULink as="a" to="/reset-password">Forgot your password?</ULink>
           </div>
         </fieldset>

@@ -63,9 +63,10 @@ const sendVerificationEmail = async () => {
 };
 
 const showToast = async () => {
+  console.log("showToast");
   if (
     useAuthStore()?.user?.id &&
-    useAuthStore()?.user?.account_activated !== true
+    useAuthStore()?.user?.account_activated === false
   ) {
     const toast = useToast();
 

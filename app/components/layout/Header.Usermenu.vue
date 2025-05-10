@@ -1,7 +1,7 @@
 <template>
   <div>
     <UDropdownMenu
-      v-if="authStore.user"
+      v-if="authStore?.isLoggedIn"
       :items="itemsLoggedIn"
       :ui="{
         content: 'w-48',
@@ -23,7 +23,7 @@
     </UDropdownMenu>
 
     <UDropdownMenu
-      v-if="!authStore?.user"
+      v-if="!authStore?.isLoggedIn"
       :items="itemsLoggedOut"
       :ui="{
         content: 'w-48',

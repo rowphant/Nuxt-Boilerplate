@@ -95,11 +95,11 @@ const processingFiles = ref([]);
 
 const uploadSubmitHandler = async (formData: FormData) => {
   for (const pair of formData.entries()) {
-    const key = pair[0];
-    const value = pair[1];
-    const index = processingFiles.value.length;
+    // const key = pair[0];
+    // const value = pair[1];
+    // const index = processingFiles.value.length;
 
-    value && processingFiles.value.push(value);
+    // value && processingFiles.value.push(value);
 
     const data = await authStore.uploadUserImage(formData);
 
@@ -118,7 +118,8 @@ const uploadSubmitHandler = async (formData: FormData) => {
 
 const onSubmit = async () => {
   if (user.value) {
-    const response = await authStore.updateUserDetails(form.value);
+    console.log(user.value)
+    const response = await authStore.updateUserDetails(user.value);
 
     if (response?.data?.status !== 200) {
       error.value = response;

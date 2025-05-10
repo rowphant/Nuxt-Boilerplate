@@ -138,13 +138,13 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       navigateTo("/");
 
-      setTimeout(() => {
-        this.isLoggedIn = false;
-        this.token = null;
-        this.user = null;
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-      }, 500);
+      this.isLoggedIn = false;
+      this.token = null;
+      this.user = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      return true;
     },
 
     async validateUser() {

@@ -14,7 +14,7 @@
     </div>
 
     <div v-else>
-      <div v-if="authStore.user.id" class="grow">
+      <div v-if="authStore.isLoggedIn" class="grow">
         <div class="container mx-auto grow place-content-center">
           <slot />
         </div>
