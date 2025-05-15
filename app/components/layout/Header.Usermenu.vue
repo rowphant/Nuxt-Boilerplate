@@ -1,7 +1,7 @@
 <template>
   <div>
     <UDropdownMenu
-      v-if="authStore.loading === false && authStore?.user?.id"
+      v-if="user?.id"
       :items="itemsLoggedIn"
       :ui="{
         content: 'w-48',
@@ -10,27 +10,30 @@
       <UButton
         color="neutral"
         variant="outline"
-        :loading="authStore.loading !== false"
-        :icon_="!authStore.user.profile_image ? 'mingcute:user-3-fill' : null"
+        :loading_="loading !== false"
+        :icon_="!user.profile_image ? 'mingcute:user-3-fill' : null"
         class="rounded-full cursor-pointer w-10 h-10 place-items-center place-content-center"
       >
-        <div v-if="authStore.user.profile_image || authStore.user.avatar_urls">
+        <div v-if="user.profile_image || user.avatar_urls">
           <UAvatar
             class_="cursor-pointer"
-            :src="(authStore.user.profile_image.sizes?.thumbnail || authStore.user.avatar_urls?.['96'])"
+            :src="
+              user.profile_image.sizes?.thumbnail ||
+              user.avatar_urls?.['96']
+            "
           />
         </div>
       </UButton>
     </UDropdownMenu>
     <UDropdownMenu
-      v-if="!authStore?.user?.id"
+      v-if="!user?.id"
       :items="itemsLoggedOut"
       :ui="{
         content: 'w-48',
       }"
     >
       <UButton
-        :loading="authStore.loading !== false"
+        :loading_="loading !== false"
         icon="mingcute:user-3-line"
         color="neutral"
         variant="outline"
@@ -41,9 +44,9 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from "~/stores/auth";
 import type { DropdownMenuItem } from "@nuxt/ui";
-const authStore = useAuthStore();
+const { logout } = useAuth();
+const { user } = useUser();
 
 const itemsLoggedOut = ref<DropdownMenuItem[][]>([
   [
@@ -68,14 +71,19 @@ const itemsLoggedIn = ref<DropdownMenuItem[][]>([
       to: "/user",
     },
     {
+      label: "Groups",
+      icon: "mingcute:group-3-fill",
+      to: "/user/groups",
+    },
+    {
       label: "Account",
-      icon: "mingcute:user-setting-fill",
+      icon: "mingcute:settings-7-line",
       to: "/user/account",
     },
     {
       label: "Logout",
       icon: "mingcute:align-arrow-right-line",
-      onClick: () => authStore.logout(),
+      onClick: () => logout(),
     },
   ],
 ]);

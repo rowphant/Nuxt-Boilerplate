@@ -3,9 +3,8 @@
 </template>
 <script setup lang="ts">
 import { onMounted, watch } from "vue";
-import { useAuthStore } from "~/stores/auth";
-// import type { ToastProps } from "@nuxt/ui";
 
+const { user } = useUser();
 // const props = defineProps<{
 //   color: ToastProps["color"];
 //   defaultOpen: ToastProps["defaultOpen"];
@@ -16,30 +15,21 @@ import { useAuthStore } from "~/stores/auth";
 // }>();
 
 const sendVerificationEmail = async () => {
-  const { $config } = useNuxtApp();
-  const apiBase = $config.public?.apiBase;
-  const userId = useAuthStore()?.user?.id;
+  const { user } = useUser();
+  const { $apiFetch } = useNuxtApp();
 
-  if (!apiBase) {
-    console.error("API base is not defined");
-    return;
-  }
-
-  if (!userId) {
+  if (!user.value?.id) {
     console.error("User ID is not defined");
     return;
   }
 
   try {
-    const response = await $fetch(
-      `${apiBase}/wp-json/wp/v2/send-verification-email`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          id: userId,
-        }),
-      }
-    );
+    const response = await $apiFetch(`/wp-json/wp/v2/send-verification-email`, {
+      method: "POST",
+      body: JSON.stringify({
+        id: user.value.id,
+      }),
+    });
 
     if (response?.code === 200) {
       const toast = useToast();
@@ -54,20 +44,18 @@ const sendVerificationEmail = async () => {
       console.error("No response received");
       return;
     }
-  } catch (error) {
-    if (!error.data) {
+  } catch (e) {
+    if (!e.data) {
       console.error("No error data received");
-      return;
+      return e;
     }
   }
 };
 
 const showToast = async () => {
+  const { user } = useUser();
   console.log("showToast");
-  if (
-    useAuthStore()?.user?.id &&
-    useAuthStore()?.user?.account_activated === false
-  ) {
+  if (user.value?.id && user.value?.account_activated === false) {
     const toast = useToast();
 
     toast.add({
@@ -91,7 +79,7 @@ const showToast = async () => {
 };
 
 watch(
-  () => useAuthStore()?.user?.id,
+  () => user?.value?.id,
   (newValue) => {
     showToast();
   }

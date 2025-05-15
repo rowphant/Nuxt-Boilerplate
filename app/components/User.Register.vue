@@ -4,7 +4,6 @@
     <UForm
       :state="registerState"
       @submit="onSubmit"
-      :loading="authStore.loading"
       class="flex flex-col gap-3"
     >
       <!-- Username -->
@@ -116,11 +115,7 @@
       <div class="w-full">
         <UBadge v-if="error" color="warning">{{ error.message }}</UBadge>
       </div>
-      <UButton
-        type="submit"
-        :loading="authStore.loading"
-        class="justify-center cursor-pointer mt-4"
-      >
+      <UButton type="submit" class="justify-center cursor-pointer mt-4">
         Register
       </UButton>
     </UForm>
@@ -129,11 +124,11 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useAuthStore } from "@/stores/auth";
+
+const { register } = useAuth();
 
 const labelClasses =
   "pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-1.5 peer-placeholder-shown:font-normal";
-const authStore = useAuthStore();
 const showPassword = ref(false);
 const registerState = ref({
   username: "",
@@ -143,16 +138,9 @@ const registerState = ref({
 });
 const error = ref(null);
 
-watch(
-  () => authStore.error,
-  (newError) => {
-    error.value = newError;
-  }
-);
-
 const onSubmit = async () => {
   try {
-    await authStore.register(
+    await register(
       registerState.value.username,
       registerState.value.email,
       registerState.value.password

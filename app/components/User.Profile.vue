@@ -8,10 +8,14 @@
     >
       <div class="space-y-4">
         <UFormField label="ID">
-          <UInput v-model="user.id" disabled icon="mingcute:hashtag-line"/>
+          <UInput v-model="form.id" disabled icon="mingcute:hashtag-line" />
         </UFormField>
         <UFormField label="Username">
-          <UInput v-model="user.username" icon="heroicons-outline:user" />
+          <UInput
+            v-model="form.username"
+            icon="heroicons-outline:user"
+            disabled
+          />
         </UFormField>
         <!-- <UFormField label="Nickname">
              <UInput v-model="form.nickname" disabled />
@@ -20,32 +24,46 @@
              <UInput v-model="form.slug" disabled />
            </UFormField> -->
         <UFormField label="First name">
-          <UInput v-model="user.first_name" icon="heroicons-outline:user" />
+          <UInput v-model="form.first_name" icon="heroicons-outline:user" />
         </UFormField>
         <UFormField label="Last name">
-          <UInput v-model="user.last_name" icon="heroicons-outline:user" />
+          <UInput v-model="form.last_name" icon="heroicons-outline:user" />
         </UFormField>
         <UFormField label="E-Mail">
-          <UInput v-model="user.email" icon="heroicons-outline:at-symbol" />
+          <UInput v-model="form.email" icon="heroicons-outline:at-symbol" />
         </UFormField>
         <UFormField label="Description">
-          <UInput v-model="user.description" icon="material-symbols:drive-file-rename-outline-outline"/>
+          <UInput
+            v-model="form.description"
+            icon="material-symbols:drive-file-rename-outline-outline"
+          />
         </UFormField>
       </div>
 
-      <UButton type="submit" :loading="authStore.loading"> Submit </UButton>
+      <UButton
+        type="submit"
+        :loading_="loading"
+        class="cursor-pointer"
+      >
+        Submit
+      </UButton>
 
       <div class="w-full">
-        <UBadge v-if="error" color="warning">{{ error.message }}</UBadge>
+        <UBadge v-if="error?.message" color="warning">{{
+          error?.message
+        }}</UBadge>
+        <UBadge v-if="success" color="success">Successfully saved</UBadge>
       </div>
     </UForm>
-
     <div
-      v-if="user && settings?.user_profile_image"
+      v-if="user && globalStore.settings.user_profile_image"
       class="max-w-content flex flex-col items-start gap-4"
     >
       <label>Profile image</label>
-      <UserImage />
+      <UserImage
+        :mediaLibrary="true"
+        :changeImageCallback="changeImageCallback"
+      />
     </div>
   </div>
 </template>
@@ -53,14 +71,11 @@
 <script setup lang="ts">
 import { UButton } from "#components";
 import { ref, watch } from "vue";
-import { useAuthStore } from "~/stores/auth";
 import { useGlobalStore } from "~/stores/settings";
 import UserImage from "~/components/User.Image.vue";
 
-const authStore = useAuthStore();
-const { settings } = useGlobalStore();
-console.log(settings);
-const user = ref(authStore?.user);
+const globalStore = useGlobalStore();
+const { user, updateUser } = useUser();
 
 const form = ref<{
   id: number;
@@ -69,25 +84,62 @@ const form = ref<{
   last_name: string;
   email: string;
   description: string;
-}>({
-  id: 0,
-  username: "",
-  first_name: "",
-  last_name: "",
-  email: "",
-  description: "",
-});
-const error = ref(null);
+  profile_image: number;
+}>({});
 
+watch(
+  () => user.value,
+  (newValue) => {
+    if (!newValue) return;
+
+    form.value = {
+      id: newValue?.id,
+      username: newValue?.username,
+      first_name: newValue?.first_name,
+      last_name: newValue?.last_name,
+      email: newValue?.email,
+      description: newValue?.description,
+      profile_image: newValue?.profile_image.id || null,
+    };
+  },
+  { immediate: true }
+);
+
+const error = ref(null);
+const success = ref(null);
 const processingFiles = ref([]);
 
-const onSubmit = async () => {
-  if (user.value) {
-    console.log(user.value);
-    const response = await authStore.updateUserDetails(user.value);
+const changeImageCallback = (image) => {
+  console.log("Image changed", image);
+  if (image?.id) {
+    form.value.profile_image = image.id;
+  } else {
+    form.value.profile_image = null;
+  }
+};
 
-    if (response?.data?.status !== 200) {
+const onSubmit = async () => {
+  const changedFields = Object.entries(form.value).reduce(
+    (acc, [key, value]) => {
+      if (key === "profile_image") {
+        if (value !== user?.profile_image?.id) {
+          acc[key] = value;
+        }
+      } else if (value !== user?.[key]) {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {} as Record<string, unknown>
+  );
+
+  if (Object.keys(changedFields).length > 0) {
+    const response = await updateUser(changedFields);
+
+    if (!response?.id) {
       error.value = response;
+    } else {
+      success.value = response.id;
     }
   }
 };

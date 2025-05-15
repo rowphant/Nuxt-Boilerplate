@@ -22,8 +22,6 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 import HeaderUsermenu from "~/components/layout/Header.Usermenu.vue";
 import ColorModeButton from "~/components/ColorModeButton.vue";
-import { useAuthStore } from "~/stores/auth";
-const authStore = useAuthStore();
 
 const props = defineProps({
   mainNav: {

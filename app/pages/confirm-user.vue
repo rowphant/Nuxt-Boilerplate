@@ -16,10 +16,9 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
 import LoadingIndicator from "~/components/LoadingIndicator.vue";
 
-const authStore = useAuthStore();
+const { confirmUser } = useAuth();
 
 const route = useRoute();
 const authCode = route.query.act || route.query.code;
@@ -28,7 +27,7 @@ const loading = ref(true);
 
 try {
   loading.value = true;
-  const response = await authStore.confirmUser(authCode);
+  const response = await confirmUser(authCode);
   confirmedUser.value = response;
   loading.value = false;
 } catch (error) {

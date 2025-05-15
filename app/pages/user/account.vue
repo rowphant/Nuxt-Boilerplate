@@ -11,6 +11,6 @@
 import UserAccount from "~/components/User.Account.vue";
 
 definePageMeta({
-  layout: 'auth'
+  requiresAuth: true,
 })
 </script>

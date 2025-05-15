@@ -123,17 +123,11 @@ async function resetPassword() {
   } else {
     loadingButton.value = true;
     disableSubmit.value = true;
-    const { $config } = useNuxtApp();
-    const apiBase = $config.public?.apiBase;
-
-    if (!apiBase) {
-      console.error("API base is not defined");
-      return;
-    }
+    const { $apiFetch } = useNuxtApp();
 
     try {
-      const response = await $fetch(
-        `${apiBase}/wp-json/wp/v2/reset-password/confirm`,
+      const response = await $apiFetch(
+        `/wp-json/wp/v2/reset-password/confirm`,
         {
           method: "POST",
           body: JSON.stringify({

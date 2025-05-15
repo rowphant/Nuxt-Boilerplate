@@ -115,24 +115,15 @@ async function sendResetLink() {
 
   handleCountdown();
 
-  const { $config } = useNuxtApp();
-  const apiBase = $config.public?.apiBase;
-
-  if (!apiBase) {
-    console.error("API base is not defined");
-    return;
-  }
+  const { $apiFetch } = useNuxtApp();
 
   try {
-    const response = await $fetch(
-      `${apiBase}/wp-json/wp/v2/reset-password/request`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email: email.value,
-        }),
-      }
-    );
+    const response = await $apiFetch(`/wp-json/wp/v2/reset-password/request`, {
+      method: "POST",
+      body: JSON.stringify({
+        email: email.value,
+      }),
+    });
 
     if (!response) {
       console.error("No response received");
@@ -141,13 +132,13 @@ async function sendResetLink() {
 
     request.value = response;
     loadingButton.value = false;
-  } catch (error) {
-    if (!error.data) {
+  } catch (e) {
+    if (!e.data) {
       console.error("No error data received");
       return;
     }
 
-    request.value = error.data;
+    request.value = e.data;
     loadingButton.value = false;
   }
 }

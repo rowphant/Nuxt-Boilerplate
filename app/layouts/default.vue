@@ -1,25 +1,25 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <!-- Header -->
-    <Header :mainNav="mainNav"/>
+    <Header :mainNav="mainNav" />
     <!-- Content -->
-    <div class="grow flex">
-      <div class="container mx-auto grow place-content-center">
+    <div class="grow flex items-start justify-center">
+      <div class="container mx-auto grow">
         <slot />
       </div>
     </div>
     <!-- Footer -->
-    <Footer :menus="[menus.main, menus.social, menus.company]"/>
+    <Footer :menus="[menus.main, menus.social, menus.company]" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+import type { NavigationMenuItem } from "@nuxt/ui";
 import Header from "~/components/layout/Header.vue";
 import Footer from "~/components/layout/Footer.vue";
 
 const menus = {
-  "main": {
+  main: {
     title: "Menu",
     items: [
       { label: "Home", to: "/" },
@@ -27,7 +27,7 @@ const menus = {
       { label: "Contact", to: "/contact" },
     ],
   },
-  "social":{
+  social: {
     title: "Social Media",
     items: [
       { label: "Twitter", to: "/" },
@@ -35,7 +35,7 @@ const menus = {
       { label: "Instagram", to: "/" },
     ],
   },
-  "company":{
+  company: {
     title: "Company",
     items: [
       { label: "About us", to: "/" },
@@ -48,12 +48,12 @@ const menus = {
 
 const mainNav = ref<NavigationMenuItem[]>([
   {
-    label: 'Home',
-    to: '/',
+    label: "Home",
+    to: "/",
   },
   {
-    label: 'Contact',
-    to: '/contact',
+    label: "Contact",
+    to: "/contact",
   },
-])
+]);
 </script>

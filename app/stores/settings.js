@@ -8,6 +8,7 @@ export const useGlobalStore = defineStore("global", {
 
   actions: {
     async getSettings(username, password) {
+      console.log("Fetching settings...");
       this.loading = true;
       const { $config } = useNuxtApp();
       const apiBase = $config.public.apiBase;
