@@ -1,6 +1,6 @@
 <template>
-  <div class="py-20">
-    <div class="mx-auto space-y-8">
+  <div class="py-12">
+    <div class="max-w-4xl mx-auto space-y-10">
       <h1 class="text-4xl">Groups</h1>
       <UserGroups />
     </div>
