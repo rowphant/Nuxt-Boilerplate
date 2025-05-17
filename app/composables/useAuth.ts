@@ -96,5 +96,13 @@ export const useAuth = () => {
     }
   };
 
-  return { authToken, isAuthenticated, login, logout, validateToken, register, confirmUser };
+  return {
+    authToken,
+    isAuthenticated,
+    login,
+    logout,
+    validateToken,
+    register,
+    confirmUser,
+  };
 };

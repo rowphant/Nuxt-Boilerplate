@@ -5,9 +5,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     return navigateTo("/login");
   }
-
   
-  if (isAuthenticated.value && !user.value) {
+  if (await isAuthenticated.value && !user.value) {
     await fetchUser();
   }
 });
