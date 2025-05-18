@@ -4,7 +4,7 @@
       <nav class="flex items-center">
         <div class="py-2">
             <NuxtLink to="/">
-              <div class="rounded-md border border-(--ui-border-muted) px-4 py-2">Logo</div>
+              <div class="rounded-md border border-(--ui-border-muted) px-4 py-2">Nuxt Boilerplate</div>
             </NuxtLink>
         </div>
         <div class="grow flex justify-end items-center space-x-8">
