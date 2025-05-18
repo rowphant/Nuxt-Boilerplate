@@ -5,9 +5,7 @@
   >
     <LoadingIndicator />
   </div>
-  <div v-else class="py-20">
-      <Register />
-  </div>
+  <Register v-else />
 </template>
 
 <script setup lang="ts">

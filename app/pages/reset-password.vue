@@ -5,7 +5,7 @@
   >
     <LoadingIndicator />
   </div>
-  <div class="py-20" v-else>
+  <div v-else>
     <UserResetPasswordRequest v-if="!code" />
     <UserResetPassword v-else :code="code" :userId="userId" />
   </div>

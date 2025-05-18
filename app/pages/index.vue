@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center gap-4">
+  <div class="flex flex-col items-center justify-center gap-4 relative">
     <h1 class="z-99 font-bold text-2xl text-(--ui-color-primary-400)">Nuxt Boilerplate</h1>
 
     <div class="absolute">

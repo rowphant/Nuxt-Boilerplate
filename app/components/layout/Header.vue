@@ -3,7 +3,9 @@
     <div class="container mx-auto">
       <nav class="flex items-center">
         <div class="py-2">
-            <div class="rounded-md border px-4 py-2">Logo</div>
+            <NuxtLink to="/">
+              <div class="rounded-md border border-(--ui-border-muted) px-4 py-2">Logo</div>
+            </NuxtLink>
         </div>
         <div class="grow flex justify-end items-center space-x-8">
           <UNavigationMenu :items="mainNav" />

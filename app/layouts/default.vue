@@ -3,9 +3,9 @@
     <!-- Header -->
     <Header :mainNav="mainNav" />
     <!-- Content -->
-    <div class="grow flex items-start justify-center">
-      <div class="container mx-auto grow">
-        <slot />
+    <div class="grow flex justify-center items-center">
+      <div class="container max-w-4xl mx-auto grow py-20 space-y-8">
+          <slot />
       </div>
     </div>
     <!-- Footer -->
