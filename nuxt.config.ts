@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: process.env.NODE_ENV === 'dev' },
+  devtools: { enabled: process.env.NUXT_ENV === 'development' },
 
   modules: [
     "@nuxt/ui",
