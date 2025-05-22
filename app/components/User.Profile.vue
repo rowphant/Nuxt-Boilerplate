@@ -76,6 +76,7 @@ import UserImage from "~/components/User.Image.vue";
 
 const globalStore = useGlobalStore();
 const { user, updateUser } = useUser();
+const loading = ref(false);
 
 const form = ref<{
   id: number;
@@ -84,8 +85,16 @@ const form = ref<{
   last_name: string;
   email: string;
   description: string;
-  profile_image: number;
-}>({});
+  profile_image: number | null;
+}>({
+  id: 0,
+  username: "",
+  first_name: "",
+  last_name: "",
+  email: "",
+  description: "",
+  profile_image: null,
+});
 
 watch(
   () => user.value,
@@ -99,7 +108,7 @@ watch(
       last_name: newValue?.last_name,
       email: newValue?.email,
       description: newValue?.description,
-      profile_image: newValue?.profile_image.id || null,
+      profile_image: newValue?.profile_image?.id || null,
     };
   },
   { immediate: true }
