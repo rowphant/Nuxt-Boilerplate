@@ -1,8 +1,6 @@
 export const useAuth = () => {
   const authToken = useCookie("authToken", { path: "/" });
-  const isAuthenticated = computed(
-    async () => !!authToken.value && (await validateToken())
-  );
+  const isAuthenticated = computed(() => !!authToken.value);
 
   // Auto-Init: Fallback for Client, if Cookie is lost
   if (process.client && !authToken.value) {
@@ -38,6 +36,7 @@ export const useAuth = () => {
   };
 
   const validateToken = async () => {
+    console.log("Validating token...");
     const { $apiFetch } = useNuxtApp();
 
     try {
