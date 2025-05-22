@@ -47,6 +47,7 @@
 import type { DropdownMenuItem } from "@nuxt/ui";
 const { logout } = useAuth();
 const { user } = useUser();
+const loading = ref(false);
 
 const itemsLoggedOut = ref<DropdownMenuItem[][]>([
   [
