@@ -4,6 +4,7 @@ export const useWordpress = () => {
 
   const fetchWordpressData = async () => {
     const { $apiFetch } = useNuxtApp();
+
     try {
       const data = await $apiFetch("/wp-json", {
         method: "GET",

@@ -1,5 +1,4 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  console.log("Global Middleware for authentication");
   const { isAuthenticated } = useAuth();
   const { user, fetchUser } = useUser();
 
