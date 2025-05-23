@@ -3,9 +3,11 @@
     <div class="container mx-auto">
       <nav class="flex items-center">
         <div class="py-2">
-            <NuxtLink to="/">
-              <div class="rounded-md border border-(--ui-border-muted) px-4 py-2">Nuxt Boilerplate</div>
-            </NuxtLink>
+          <NuxtLink to="/">
+            <div class="rounded-md border border-(--ui-border-muted) px-4 py-2">
+              {{ useGlobals().siteName }}
+            </div>
+          </NuxtLink>
         </div>
         <div class="grow flex justify-end items-center space-x-8">
           <UNavigationMenu :items="mainNav" />
@@ -21,7 +23,7 @@
 
 <script setup lang="ts">
 // import ThemeSwitch from "@/components/ThemeSwitch/ThemeSwitch.vue";
-import type { NavigationMenuItem } from '@nuxt/ui'
+import type { NavigationMenuItem } from "@nuxt/ui";
 import HeaderUsermenu from "~/components/layout/Header.Usermenu.vue";
 import ColorModeButton from "~/components/ColorModeButton.vue";
 

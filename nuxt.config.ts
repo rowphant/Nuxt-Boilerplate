@@ -31,6 +31,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE,
+      siteName: process.env.NUXT_PUBLIC_SITE_NAME,
     },
   },
 });
