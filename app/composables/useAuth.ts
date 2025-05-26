@@ -47,7 +47,7 @@ export const useAuth = () => {
       return response;
     } catch (error) {
       console.error("Error validating token:", error);
-      return error;
+      return false;
     }
   };
 

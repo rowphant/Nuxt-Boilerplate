@@ -4,7 +4,7 @@ export default defineNuxtPlugin(() => {
   const apiFetch = async (path: string, opts: any = {}) => {
     const token = useCookie('authToken').value
     const headers = opts.headers || {}
-    const authOff = opts.useAuth || false
+    const authOff = opts.authOff || false
 
     if (token && !authOff) {
       headers['Authorization'] = `Bearer ${token}`
