@@ -1,13 +1,13 @@
 <template>
-  <div class="max-w-xs mx-auto space-y-8 bg-navbar rounded-lg p-8">
+  <div class="w-xs mx-auto space-y-8 bg-navbar rounded-lg p-8">
     <h1 class="font-light text-2xl">Login</h1>
     <form @submit.prevent="handleLogin" class="max-w-content">
-      <fieldset className="fieldset space-y-2">
+      <fieldset className="fieldset space-y-3">
         <div>
           <!-- <label for="username" class="block text-sm font-medium text-gray-700"
             >Username</label
           > -->
-          <div class="mt-1">
+          <div>
             <label
               for="username"
               class="relative input shadow-none text-left overflow-hidden p-0"
@@ -79,7 +79,7 @@
     </div>
 
     <div v-if="responseData?.data?.status > 200">
-      <UBadge color="error" class="flex_ flex-col_ items-start_">
+      <UBadge color="error">
         <div v-html="responseData?.message"></div>
       </UBadge>
     </div>

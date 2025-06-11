@@ -2,6 +2,7 @@
   <div class="max-w-xs mx-auto space-y-8 bg-navbar rounded-lg p-8">
     <h1 class="font-light text-2xl">Register</h1>
     <UForm
+      :disabled="loading"
       :state="registerState"
       @submit="onSubmit"
       class="flex flex-col gap-3"
@@ -112,10 +113,21 @@
           </template>
         </UInput>
       </label>
-      <div class="w-full">
-        <UBadge v-if="error" color="warning">{{ error.message }}</UBadge>
+      <div class="w-full space-y-1">
+        <UBadge
+          v-if="notification && notification?.code === 200"
+          color="success"
+          class="w-full"
+          >Your registration was Successful</UBadge
+        >
+        <UBadge
+          v-if="notification && notification?.code !== 200"
+          color="warning"
+          class="w-full"
+          >{{ notification?.message }}</UBadge
+        >
       </div>
-      <UButton type="submit" class="justify-center cursor-pointer mt-4">
+      <UButton type="submit" class="justify-center cursor-pointer mt-4" :loading="loading">
         Register
       </UButton>
     </UForm>
@@ -123,6 +135,7 @@
 </template>
 
 <script setup lang="ts">
+import { navigateTo } from "nuxt/app";
 import { ref, watch } from "vue";
 
 const { register } = useAuth();
@@ -136,17 +149,36 @@ const registerState = ref({
   password: "",
   confirm_password: "",
 });
-const error = ref(null);
+const loading = ref(false);
+const notification = ref(null);
 
 const onSubmit = async () => {
+  loading.value = true;
   try {
-    await register(
+    const response = await register(
       registerState.value.username,
       registerState.value.email,
       registerState.value.password
     );
+
+    notification.value = response.data || response;
+
+    navigateTo("/login");
+
+    console.log("response: ", response.data);
   } catch (e) {
-    error.value = e;
+    notification.value = e;
   }
+
+  loading.value = false;
+};
+
+const resetForm = () => {
+  registerState.value = {
+    username: "",
+    email: "",
+    password: "",
+    confirm_password: "",
+  };
 };
 </script>

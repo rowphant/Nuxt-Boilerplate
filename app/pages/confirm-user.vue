@@ -5,10 +5,24 @@
     </div>
     <div v-else>
       <div class="flex flex-col justify-center items-center gap-8">
-        <div v-if="confirmedUser.code === 200">
-          <Icon name="mingcute:thumb-up-line" class="text-4xl text-primary" />
+        <div>
+          <Icon
+            v-if="confirmedUser.code === 200"
+            name="pixelarticons:mood-happy"
+            class="text-4xl text-primary"
+          />
+          <Icon
+            v-else
+            name="pixelarticons:mood-sad"
+            class="text-4xl text-primary"
+          />
         </div>
-        {{ confirmedUser?.message }}
+        <UBadge color="warning" variant="subtle" v-if="confirmedUser?.code !== 200">
+          {{ confirmedUser?.message }}
+        </UBadge>
+        <UBadge color="success" variant="subtle" v-if="confirmedUser?.code === 200">
+          {{ confirmedUser?.message }}
+        </UBadge>
       </div>
     </div>
   </div>

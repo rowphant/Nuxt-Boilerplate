@@ -1,177 +1,182 @@
 <template>
-  <!-- {{ user?.user_groups }} -->
-  <div class="border-b-1 border-(--ui-border-muted) pb-4 mb-8">
+  <div class="border-b-1 border-(--ui-border-muted) pb-4 mb-8 space-x-2">
+    <!-- Create group -->
     <UButton
-      label="Create new group"
+      label="Create group"
       color="neutral"
       variant="outline"
       icon="mingcute:add-line"
       class="cursor-pointer"
+      @click="createGroupHandler"
     />
+
+    <!-- Request group access -->
     <UButton
-      label="Request access to group"
+      label="Find group"
       color="neutral"
       variant="outline"
-      icon="mingcute:classify-add-2-fill"
+      icon="i-lucide-search"
       class="cursor-pointer"
+      @click="searchGroupModal"
     />
   </div>
+
+  <!-- Groups -->
   <div class="grid grid-cols-1 gap-8">
-    <div
-      v-for="(type, typeIndex) in user?.user_groups"
-      :key="typeIndex"
-      class="space-y-2 border-b-1 border-(--ui-border-muted)/50 pb-8"
-    >
-      <h3 class="text-lg text-secondary">
-        {{ typeIndex.charAt(0).toUpperCase() + typeIndex.slice(1) }}
-      </h3>
+    <!-- Group Author -->
+    <div class="space-y-2 border-b-1 border-(--ui-border-muted)/50 pb-8">
+      <h3 class="text-lg text-secondary">Group Author</h3>
       <div class="space-y-2">
-        <!-- No Entries -->
-        <div v-if="type.length === 0" class="text-sm text-(--ui-text-muted)">
-          <div v-if="['invitations', 'requests'].includes(typeIndex)">
-            No open {{ typeIndex }}
-          </div>
-          <div v-else>No groups found.</div>
-        </div>
-
-        <!-- Groups list -->
         <div
-          v-for="(group, groupIndex) in type"
+          v-if="user.group_author?.length > 0"
+          v-for="(group, groupIndex) in user.group_author"
           :key="groupIndex"
-          class="rounded-lg p-4 border border-(--ui-border) bg-navbar/20 flex gap-4"
+          type="author"
         >
-          <div class="grow">
-            <div class="flex gap-4 items-center">
-              {{ group.title }}
-              <Icon
-                v-if="['admin', 'member'].includes(typeIndex)"
-                :name="
-                  group.public
-                    ? 'material-symbols:visibility-outline-rounded'
-                    : 'material-symbols:visibility-off-outline-rounded'
-                "
-                class="size-5"
-              />
-            </div>
-            <div class="text-sm text-(--ui-text-muted)">ID: {{ group.id }}</div>
-            <div class="text-sm text-(--ui-text-muted)">Members: {{ group.members }}</div>
-            <div
-              v-if="['invitations'].includes(typeIndex)"
-              class="text-sm text-(--ui-text-muted)"
-            >
-              Invited by: {{ group.invited_by }}
-            </div>
-          </div>
-
-          <div
-            v-if="['invitations'].includes(typeIndex)"
-            class="space-y-2 flex"
-          >
-            <div class="flex gap-2 justify-end items-end">
-              <UButton
-                label="Accept"
-                color="success"
-                variant="outline"
-                icon="i-heroicons:check-circle-solid"
-                class="cursor-pointer"
-              />
-              <UButton
-                label="Decline"
-                color="error"
-                variant="outline"
-                icon="i-heroicons:x-circle-solid"
-                class="cursor-pointer"
-              />
-            </div>
-          </div>
-          <div v-if="['request'].includes(typeIndex)" class="space-y-2 flex">
-            <div class="flex gap-2 justify-end items-end">
-              <UButton
-                label="Delete"
-                color="error"
-                variant="outline"
-                icon="material-symbols:delete-outline-rounded"
-                class="cursor-pointer"
-              />
-            </div>
-          </div>
-          <div v-if="['member'].includes(typeIndex)" class="space-y-2 flex">
-            <div class="flex gap-2 justify-end items-end">
-              <UButton
-                label="Leave"
-                color="error"
-                variant="outline"
-                icon="material-symbols:exit-to-app-rounded"
-                class="cursor-pointer"
-              />
-            </div>
-          </div>
-          <div v-if="['admin'].includes(typeIndex)" class="space-y-2 flex">
-            <div class="flex gap-2 justify-end items-end">
-              <UButton
-                label="Settings"
-                color="neutral"
-                variant="outline"
-                icon="mingcute:settings-7-line"
-                class="cursor-pointer"
-              />
-              <UButton
-                label="Delete"
-                color="error"
-                variant="outline"
-                icon="material-symbols:delete-outline-rounded"
-                class="cursor-pointer"
-              />
-            </div>
-          </div>
+          <UserGroupsItem :group="group" />
         </div>
+        <div v-else>No groups found.</div>
       </div>
     </div>
 
-    <!-- <div class="space-y-2">
-      <h3 class="text-lg">Admin</h3>
-      <div
-        class="bg-slate-950/50 rounded-lg p-4 border border-(--ui-border-muted)"
-      >
-        <div v-for="(value, index) in user?.user_groups.admin" :key="index">
-          {{ value.title }}
-        </div>
-      </div>
-    </div>
-
-    <div class="">
-      <h3 class="text-lg">Member</h3>
-      <div class="border rounded-lg p-4">
-        <div v-for="(value, index) in user?.user_groups.member" :key="index">
-          {{ value.title }}
-        </div>
-      </div>
-    </div>
-
-    <div class="">
-      <h3 class="text-lg">Invitations</h3>
-      <div class="border rounded-lg p-4">
+    <!-- Group Admin -->
+    <div class="space-y-2 border-b-1 border-(--ui-border-muted)/50 pb-8">
+      <h3 class="text-lg text-secondary">Group Admin</h3>
+      <div class="space-y-2">
         <div
-          v-for="(value, index) in user?.user_groups.invitations"
-          :key="index"
+          v-if="user.group_admin?.length > 0"
+          v-for="(group, groupIndex) in user.group_admin"
+          :key="groupIndex"
+          type="admin"
         >
-          {{ value.title }}
+          <UserGroupsItem :group="group" />
         </div>
+        <div v-else>No groups found.</div>
       </div>
     </div>
 
-    <div class="">
-      <h3 class="text-lg">Requests</h3>
-      <div class="border rounded-lg p-4">
-        <div v-for="(value, index) in user?.user_groups.requests" :key="index">
-          {{ value.title }}
+    <!-- Group Member -->
+    <div class="space-y-2 border-b-1 border-(--ui-border-muted)/50 pb-8">
+      <h3 class="text-lg text-secondary">Group Member</h3>
+      <div class="space-y-2">
+        <div
+          v-if="user.group_member?.length > 0"
+          v-for="(group, groupIndex) in user.group_member"
+          :key="groupIndex"
+        >
+          <UserGroupsItem :group="group" type="member"/>
+        </div>
+        <div v-else>No groups found.</div>
+      </div>
+    </div>
+
+    <!-- Group Invitations -->
+    <div class="space-y-2 border-b-1 border-(--ui-border-muted)/50 pb-8">
+      <h3 class="text-lg text-secondary">Group Invitations</h3>
+      <div class="space-y-2">
+        <div
+          v-if="user.group_invitations?.length > 0"
+          v-for="(group, groupIndex) in user.group_invitations"
+          :key="groupIndex"
+        >
+          <UserGroupsItem :group="group" type="invitations" />
+        </div>
+        <div v-else>No groups found.</div>
+      </div>
+    </div>
+
+    <!-- Group Requests -->
+    <div class="space-y-2 border-b-1 border-(--ui-border-muted)/50 pb-8">
+      <h3 class="text-lg text-secondary">Group Requests</h3>
+      <div class="space-y-2">
+        <div
+          v-if="user.group_requests?.length > 0"
+          v-for="(group, groupIndex) in user.group_requests"
+          :key="groupIndex"
+        >
+          <UserGroupsItem :group="group" type="requests" />
+        </div>
+        <div v-else>No groups found.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Create/Edit group -->
+  <UModal
+    title="Create user group"
+    :overlay="true"
+    :ui="{ content: 'md:max-w-xl' }"
+    v-model:open="modalUserGroup"
+  >
+    <template #body>
+      <div class="flex flex-col gap-8">
+        <div class="flex flex-col gap-2">
+          <UserGroupsForm
+            :group="currentGroup"
+            :onSubmit="userGroupsFormSubmitHandler"
+          />
         </div>
       </div>
-    </div> -->
-  </div>
+    </template>
+    <!-- <template #footer>
+          <div class="flex justify-end w-full gap-2">
+            <UButton
+              @click="() => {}"
+              color="primary"
+              class="cursor-pointer modal-close-button"
+              :disabled="true"
+              >Create user group</UButton
+            >
+          </div>
+        </template> -->
+  </UModal>
+
+  <!-- Modal Find group -->
+  <UModal
+    :title="'Find user group and request access'"
+    :overlay="true"
+    :ui="{
+      content: 'md:max-w-xl',
+      body_: 'p-0 sm:p-0',
+      header: 'hidden sm:p-0 min-h-0',
+    }"
+    v-model:open="modalFindGroup"
+  >
+    <template #body>
+      <UserGroupsSearch />
+    </template>
+  </UModal>
 </template>
 
 <script setup lang="ts">
-const { user } = useUser();
-console.log(user.value.user_groups);
+import { ref, watch, onMounted } from "vue";
+import UserGroupsItem from "./User.Groups.Item.vue";
+import UserGroupsForm from "./User.Groups.Form.vue";
+import UserGroupsSearch from "./User.Groups.Search.vue";
+import UserGroupsInvitations from "./User.Groups.Invitations.vue";
+
+const { user, fetchUser } = useUser();
+
+const modalUserGroup = ref(false);
+const modalFindGroup = ref(false);
+const currentGroup = ref<Record<string, any>>({});
+
+console.log("user: ", user.value);
+
+const createGroupHandler = () => {
+  currentGroup.value = null;
+  modalUserGroup.value = true;
+};
+
+const userGroupsFormSubmitHandler = async (response) => {
+  // Close modal and fetch user
+  if (response?.id) {
+    modalUserGroup.value = false;
+    await fetchUser();
+  }
+};
+
+const searchGroupModal = () => {
+  modalFindGroup.value = true;
+};
 </script>

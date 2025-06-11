@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="flex flex-col justify-center items-center"
-    v-if="!globalStore.settings || globalStore.settings.user_registration === 0"
-  >
-    <LoadingIndicator />
-  </div>
-  <Register v-else />
+  <Register/>
 </template>
 
 <script setup lang="ts">

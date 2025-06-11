@@ -36,7 +36,7 @@ export const useAuth = () => {
   };
 
   const validateToken = async () => {
-    console.log("Validating token...");
+    // console.log("Validating token...");
     const { $apiFetch } = useNuxtApp();
 
     try {
@@ -86,6 +86,7 @@ export const useAuth = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ code: authCode }),
+        authOff: true,
       });
 
       return response;

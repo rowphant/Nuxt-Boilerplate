@@ -2,6 +2,7 @@ export const useWordpress = () => {
   const wordpress = useState<any | null>("wordpress", () => null);
   const postTypes = useState<any | null>("postTypes", () => null);
 
+  // Fetch Wordpress options for headless use
   const fetchWordpressData = async () => {
     const { $apiFetch } = useNuxtApp();
 

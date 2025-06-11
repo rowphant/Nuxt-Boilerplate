@@ -5,6 +5,18 @@
 import { onMounted, watch } from "vue";
 
 const { user } = useUser();
+
+watch(
+  () => user?.value?.id,
+  (newValue) => {
+    showToast();
+  }
+);
+
+onMounted(() => {
+  showToast();
+});
+
 // const props = defineProps<{
 //   color: ToastProps["color"];
 //   defaultOpen: ToastProps["defaultOpen"];
@@ -31,7 +43,7 @@ const sendVerificationEmail = async () => {
       }),
     });
 
-    if (response?.code === 200) {
+    if (response?.success) {
       const toast = useToast();
 
       toast.add({
@@ -53,9 +65,13 @@ const sendVerificationEmail = async () => {
 };
 
 const showToast = async () => {
+  const route = useRoute();
+  const isConfirmUserPage = route.path === "/confirm-user";
+
+  if (isConfirmUserPage) return;
   const { user } = useUser();
-  console.log("showToast");
-  if (user.value?.id && user.value?.account_activated === false) {
+  
+  if (!user.value.account_activated) {
     const toast = useToast();
 
     toast.add({
@@ -77,11 +93,4 @@ const showToast = async () => {
     });
   }
 };
-
-watch(
-  () => user?.value?.id,
-  (newValue) => {
-    showToast();
-  }
-);
 </script>
