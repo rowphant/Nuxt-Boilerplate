@@ -23,6 +23,8 @@ export const useAuth = () => {
     if (process.client) {
       localStorage.setItem("authToken", data.token);
     }
+
+    return data;
   };
 
   const logout = () => {

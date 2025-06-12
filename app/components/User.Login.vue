@@ -105,9 +105,18 @@ const responseData = ref({});
 const loading = ref(false);
 
 const handleLogin = async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirect = urlParams.get("redirect") || "/user";
+
   try {
-    await login(username.value, password.value);
-    navigateTo("/user");
+    const loginResponse = await login(username.value, password.value);
+
+    console.log("Login response:", loginResponse);
+
+    if (loginResponse) {
+      responseData.value = loginResponse.data || loginResponse;
+      navigateTo(redirect);
+    }
   } catch (error) {
     console.error("Login fehlgeschlagen", error);
   }

@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   // If the route requires authentication and the user is not authenticated,
   if (to.meta.requiresAuth && !(await isAuthenticated.value)) {
-    return navigateTo("/login");
+    return navigateTo("/login?redirect=" + encodeURIComponent(from.fullPath));
   }
 
   // If the user is authenticated but not yet fetched, fetch the user data
