@@ -161,7 +161,7 @@ const modalUserGroup = ref(false);
 const modalFindGroup = ref(false);
 const currentGroup = ref<Record<string, any>>({});
 
-console.log("user: ", user.value);
+// console.log("user: ", user.value.group_author[0]);
 
 const createGroupHandler = () => {
   currentGroup.value = null;

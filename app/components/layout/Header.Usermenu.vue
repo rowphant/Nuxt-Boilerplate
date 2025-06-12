@@ -11,15 +11,15 @@
         color="neutral"
         variant="outline"
         :loading_="loading !== false"
-        :icon_="!user.profile_image ? 'mingcute:user-3-fill' : null"
+        :icon_="!user?.profile_image ? 'mingcute:user-3-fill' : null"
         class="rounded-full cursor-pointer w-10 h-10 place-items-center place-content-center"
       >
-        <div v-if="user.profile_image || user.avatar_urls">
+        <div v-if="user?.profile_image || user?.avatar_urls">
           <UAvatar
             class_="cursor-pointer"
             :src="
-              user.profile_image.sizes?.thumbnail ||
-              user.avatar_urls?.['96']
+              user?.profile_image?.sizes?.thumbnail ||
+              user?.avatar_urls?.['96']
             "
           />
         </div>

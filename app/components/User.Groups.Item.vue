@@ -15,18 +15,49 @@
         />
       </div>
       <ul class="flex items-center gap-4 text-xs text-muted">
-        <li class="border-1 border-muted rounded-md p-1 px-2">
-          Admins: <span class="font-bold">{{ group.admins?.length }}</span>
+        <li>
+          <UButton
+            @click="openModal('members')"
+            color="neutral"
+            variant="subtle"
+            size="sm"
+            class="cursor-pointer"
+          >
+            Admins: <span class="font-bold">{{ group.admins?.length }}</span>
+          </UButton>
         </li>
-        <li class="border-1 border-muted rounded-md p-1 px-2">
-          Members: <span class="font-bold">{{ group.member_count }}</span>
+        <li>
+          <UButton
+            @click="openModal('members')"
+            color="neutral"
+            variant="subtle"
+            size="sm"
+            class="cursor-pointer"
+          >
+            Members: <span class="font-bold">{{ group.member_count }}</span>
+          </UButton>
         </li>
-        <li class="border-1 border-muted rounded-md p-1 px-2">
-          Requests: <span class="font-bold">{{ group.requests?.length }}</span>
+        <li>
+          <UButton
+            @click="openModal('requests')"
+            color="neutral"
+            variant="subtle"
+            size="sm"
+            class="cursor-pointer"
+          >
+            Requests: <span class="font-bold">{{ group.requests?.length }}</span>
+          </UButton>
         </li>
-        <li class="border-1 border-muted rounded-md p-1 px-2">
-          Invitations:
-          <span class="font-bold">{{ group.invitations?.length }}</span>
+        <li>
+          <UButton
+            @click="openModal('invitations')"
+            color="neutral"
+            variant="subtle"
+            size="sm"
+            class="cursor-pointer"
+          >
+            Invitations: <span class="font-bold">{{ group.invitations?.length }}</span>
+          </UButton>
         </li>
       </ul>
     </div>
@@ -136,6 +167,7 @@
         variant="link"
         class="gap-4 w-full"
         :ui="{ trigger: 'grow cursor-pointer', content: 'pt-4' }"
+        v-model="activeTabValue"
       >
         <template #settings="{ item }">
           <div class="flex flex-col gap-2">
@@ -163,12 +195,12 @@
             />
           </div>
         </template>
-        
+
         <template #members="{ item }">
           <div class="flex flex-col gap-2">
             <UserGroupsMembers
               :groupId="group.id"
-              :members="group.members"
+              :users="[...new Set([...group.members, ...group.admins])]"
             />
           </div>
         </template>
@@ -188,7 +220,8 @@
   </UModal>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useRoute, useRouter } from "nuxt/app";
 import type { TabsItem } from "@nuxt/ui";
 import UserGroupsRequests from "~/components/User.Groups.Requests.vue";
 import UserGroupsMembers from "~/components/User.Groups.Members.vue";
@@ -205,26 +238,25 @@ const props = defineProps({
   },
 });
 
-const items = [
+const items: TabsItem[] = [
   {
     label: "Settings",
-    description: "",
-    // icon: 'i-lucide-user',
+    value: "settings", // Hinzugefügt
     slot: "settings" as const,
   },
   {
     label: "Invitations",
-    // icon: 'i-lucide-lock',
+    value: "invitations", // Hinzugefügt
     slot: "invitations" as const,
   },
   {
     label: "Requests",
-    // icon: 'i-lucide-lock',
+    value: "requests", // Hinzugefügt
     slot: "requests" as const,
   },
   {
     label: "Members",
-    // icon: 'i-lucide-lock',
+    value: "members", // Hinzugefügt
     slot: "members" as const,
   },
 ] satisfies TabsItem[];
@@ -246,7 +278,7 @@ const userCanAdmin = (groupId) => {
 };
 
 const editGroupHandler = () => {
-  modal.value = true;
+  openModal();
 };
 
 const userGroupsFormSubmitHandler = async (response) => {
@@ -308,5 +340,23 @@ const leaveGroup = async () => {
 
   await fetchUser();
   loading.value = false;
+};
+
+const activeTabValue = ref("settings");
+
+const active = computed({
+  get() {
+    return activeTabValue.value;
+  },
+  set(tab) {
+    activeTabValue.value = tab;
+  },
+});
+
+const openModal = (slot?: string) => {
+  modal.value = true;
+
+  const tabExists = items.some((item) => item.value === slot);
+  activeTabValue.value = tabExists && slot ? slot : items[0].slot;
 };
 </script>

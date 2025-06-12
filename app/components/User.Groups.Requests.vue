@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!requests.length" class="text-muted text-center">No requests found</div>
+  <div v-if="!requests.length" class="text-muted text-center">
+    No requests found
+  </div>
   <ul v-else class="flex flex-col gap-2">
     <li v-for="request in props.requests" :key="request">
       <div class="border border-muted rounded-md flex p-2">
@@ -34,6 +36,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
+
 const props = defineProps({
   groupId: {
     type: String,

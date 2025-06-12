@@ -40,11 +40,7 @@
         </UFormField>
       </div>
 
-      <UButton
-        type="submit"
-        :loading_="loading"
-        class="cursor-pointer"
-      >
+      <UButton type="submit" :loading_="loading" class="cursor-pointer">
         Submit
       </UButton>
 
@@ -56,7 +52,7 @@
       </div>
     </UForm>
     <div
-      v-if="user && globalStore.settings.user_profile_image"
+      v-if="user && globalStore?.settings?.user_profile_image"
       class="max-w-content flex flex-col items-start gap-4"
     >
       <label>Profile image</label>
@@ -77,6 +73,8 @@ import UserImage from "~/components/User.Image.vue";
 const globalStore = useGlobalStore();
 const { user, updateUser } = useUser();
 const loading = ref(false);
+
+console.log("user: ", user.value);
 
 const form = ref<{
   id: number;
