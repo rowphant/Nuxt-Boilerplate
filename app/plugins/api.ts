@@ -1,22 +1,46 @@
+import { ref } from "vue";
+
 export default defineNuxtPlugin(() => {
-  const runtimeConfig = useRuntimeConfig()
+  const runtimeConfig = useRuntimeConfig();
 
   const apiFetch = async (path: string, opts: any = {}) => {
-    const token = useCookie('authToken').value
-    const headers = opts.headers || {}
-    const authOff = opts.authOff || false
+    const token = useCookie("authToken").value;
+    const headers = opts.headers || {};
+    const authOff = opts.authOff || false;
+
+    let pagination = {
+      totalPosts: 0,
+      totalPages: 0,
+    };
 
     if (token && !authOff) {
-      headers['Authorization'] = `Bearer ${token}`
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
-    return await $fetch(`${runtimeConfig.public.apiBase}${path}`, {
+    const response = await $fetch(`${runtimeConfig.public.apiBase}${path}`, {
       ...opts,
       headers,
-    })
-  }
+      onResponse(context) {
+        pagination = {
+          totalPosts: Number(context.response.headers.get("X-WP-Total")),
+          totalPages: Number(context.response.headers.get("X-WP-TotalPages")),
+        };
+      },
+    });
+    // console.log("pagination:", pagination);
+
+    if (pagination.totalPosts > 0) {
+      console.log("pagination:", pagination);
+      return {
+        pagination,
+        items: response,
+      };
+    }
+
+    return response;
+  };
 
   return {
     provide: { apiFetch },
-  }
-})
+  };
+});

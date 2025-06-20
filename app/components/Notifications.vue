@@ -71,7 +71,7 @@ const showToast = async () => {
   if (isConfirmUserPage) return;
   const { user } = useUser();
   
-  if (!user.value.account_activated) {
+  if (!user.value?.account_activated) {
     const toast = useToast();
 
     toast.add({

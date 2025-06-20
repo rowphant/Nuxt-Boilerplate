@@ -45,7 +45,8 @@
             size="sm"
             class="cursor-pointer"
           >
-            Requests: <span class="font-bold">{{ group.requests?.length }}</span>
+            Requests:
+            <span class="font-bold">{{ group.requests?.length }}</span>
           </UButton>
         </li>
         <li>
@@ -56,7 +57,8 @@
             size="sm"
             class="cursor-pointer"
           >
-            Invitations: <span class="font-bold">{{ group.invitations?.length }}</span>
+            Invitations:
+            <span class="font-bold">{{ group.invitations?.length }}</span>
           </UButton>
         </li>
       </ul>

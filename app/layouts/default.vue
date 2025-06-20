@@ -3,7 +3,7 @@
     <!-- Header -->
     <Header :mainNav="mainNav" />
     <!-- Content -->
-    <div class="grow flex justify-center items-stretch">
+    <div class="grow flex justify-center items-stretch px-4">
       <div class="container max-w-4xl mx-auto grow py-20 space-y-8">
           <slot />
       </div>

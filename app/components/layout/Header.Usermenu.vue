@@ -82,6 +82,11 @@ const itemsLoggedIn = ref<DropdownMenuItem[][]>([
       to: "/user/account",
     },
     {
+      label: "Imports",
+      icon: "mingcute:settings-7-line",
+      to: "/user/imports",
+    },
+    {
       label: "Logout",
       icon: "mingcute:align-arrow-right-line",
       onClick: () => logout(),
