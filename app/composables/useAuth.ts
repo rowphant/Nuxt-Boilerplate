@@ -1,10 +1,13 @@
+import { useTokenName } from "@/plugins/utils";
+
 export const useAuth = () => {
-  const authToken = useCookie("authToken", { path: "/" });
+  const tokenName = useTokenName();
+  const authToken = useCookie(tokenName, { path: "/" });
   const isAuthenticated = computed(() => !!authToken.value);
 
   // Auto-Init: Fallback for Client, if Cookie is lost
   if (process.client && !authToken.value) {
-    const tokenFromStorage = localStorage.getItem("authToken");
+    const tokenFromStorage = localStorage.getItem(tokenName);
     if (tokenFromStorage) {
       authToken.value = tokenFromStorage;
     }
@@ -21,7 +24,7 @@ export const useAuth = () => {
     authToken.value = data.token;
 
     if (process.client) {
-      localStorage.setItem("authToken", data.token);
+      localStorage.setItem(tokenName, data.token);
     }
 
     return data;
@@ -31,7 +34,7 @@ export const useAuth = () => {
     const { user } = useUser();
     authToken.value = null;
     if (process.client) {
-      localStorage.removeItem("authToken");
+      localStorage.removeItem(tokenName);
     }
     navigateTo("/login");
     user.value = null;

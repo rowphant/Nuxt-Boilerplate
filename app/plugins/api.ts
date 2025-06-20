@@ -1,10 +1,11 @@
-import { ref } from "vue";
+import { useTokenName } from "./utils";
 
 export default defineNuxtPlugin(() => {
   const runtimeConfig = useRuntimeConfig();
+  const tokenName = useTokenName();
 
   const apiFetch = async (path: string, opts: any = {}) => {
-    const token = useCookie("authToken").value;
+    const token = useCookie(tokenName).value;
     const headers = opts.headers || {};
     const authOff = opts.authOff || false;
 
