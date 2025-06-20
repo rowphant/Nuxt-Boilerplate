@@ -11,7 +11,7 @@
         <UModal
     :title="post?.id ? 'Post: ' + post?.title?.rendered || post?.title || 'not title found' : 'Add post'"
     :overlay="true"
-    :ui="{ content: 'md:max-w-4xl min-h-100' }"
+    :ui="{ content: 'md:max-w-5xl min-h-100' }"
     v-model:open="modal"
   >
     <template #body>
