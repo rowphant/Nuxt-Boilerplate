@@ -15,9 +15,9 @@
             <AcfField
               :fieldData="item"
               :index="index"
+              :formData="formData"
               v-model="formData[item.key].value"
               @update:isEdited="setFieldEditedStatus(item.key, $event)"
-              :formData="formData"
               :dev="true"
             />
           </div>

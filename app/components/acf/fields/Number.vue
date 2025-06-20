@@ -1,15 +1,17 @@
 <template>
-  <div class="flex gap-2 items-center">
+  <div class="flex gap-2 items-center grow">
     <UInputNumber
       :defaultValue="Number(modelValue)"
       @update:modelValue="emit('update:modelValue', $event)"
       :step="Number(step)"
-      :min="Number(min)"
-      :max="Number(max)"
+      :min="min.length > 0 ? Number(min) : undefined"
+      :max="max.length > 0 ? Number(max) : undefined"
       :orientation="orientation"
       :placeholder="placeholder || 'Enter a number'"
       :required="Boolean(required)"
+      class="w-full font-semibold"
     />
+    {{ min.length > 0 ? Number(min) : undefined }}
   </div>
 </template>
 

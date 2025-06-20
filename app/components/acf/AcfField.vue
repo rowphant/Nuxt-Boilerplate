@@ -6,15 +6,15 @@
     ]"
   >
     <div class="w-full flex flex-row items-start gap-4">
-      <div class="flex flex-col items-start gap-2_ w-80 min-w-80">
+      <div class="flex flex-col items-start gap-2_ w-70 min-w-70">
         <!-- <UBadge class="text-xs text-muted" color="neutral" variant="subtle">
           {{ index + 1 }}
         </UBadge> -->
-        <h5 class="text-md grow flex gap-2">
+        <h5 class="text-md grow flex gap-1">
           <div class="w-full flex flex-row gap-1">
-            <span v-html="fieldData.label" />
-            <div v-if="fieldData.required" class="text-primary font-bold">
-              *
+            <div v-html="fieldData.label" class="text-primary text-lg" />
+            <div v-if="fieldData.required" class="text-primary font-bold ">
+              
             </div>
           </div>
           <UTooltip
@@ -23,7 +23,7 @@
           >
             <UBadge
               v-if="fieldData.conditional_logic"
-              class="rounded-full w-5 aspect-square justify-center items-center"
+              class="rounded-full w-5 aspect-square justify-center items-center w-5 h-5 p-0"
               color="secondary"
               variant="subtle"
               size="xs"
@@ -32,18 +32,12 @@
             </UBadge>
           </UTooltip>
         </h5>
-        <div
-          v-if="fieldData.instructions"
-          class="text-muted text-xs"
-        >
-        Instructions:<br/><span v-html="fieldData.instructions"></span>
-      </div>
-        <div
-          v-if="Boolean(fieldData.multiple)"
-          class="text-muted text-xs"
-        >
-        Multiple values allowed
-      </div>
+        <div v-if="fieldData.instructions" class="text-muted text-xs">
+          Instructions:<br /><span v-html="fieldData.instructions"></span>
+        </div>
+        <div v-if="Boolean(fieldData.multiple)" class="text-muted text-xs">
+          Multiple values allowed
+        </div>
         <!-- <UBadge color="secondary" variant="subtle">{{ fieldData.type }}</UBadge>
         <UBadge
           color="warning"
@@ -67,7 +61,7 @@
           {{ fieldData.prepend }}
         </UBadge>
 
-        <div class="grow">
+        <div class="grow max-w-full">
           <!-- Text -->
           <template v-if="fieldData.type === 'text'">
             <!-- v-bind="fieldData" -->
@@ -120,7 +114,7 @@
               :allow_null="fieldData.allow_null"
               :choices="convertObjectToArray(fieldData.choices)"
               :layout="fieldData.layout || 'vertical'"
-              :modelValue="modelValue || [{'label': null, 'value': null}]"
+              :modelValue="modelValue || [{ label: null, value: null }]"
               :otherChoice="fieldData.other_choice"
               :required="fieldData.required"
               :returnFormat="fieldData.return_format"
@@ -135,7 +129,7 @@
               :choices="convertObjectToArray(fieldData.choices)"
               :custom_choice_button_text="fieldData.custom_choice_button_text"
               :layout="fieldData.layout || 'vertical'"
-              :modelValue="modelValue || [{'label': null, 'value': null}]"
+              :modelValue="modelValue || [{ label: null, value: null }]"
               :required="fieldData.required"
               :returnFormat="fieldData.return_format"
               :saveCustom="fieldData.save_custom"
@@ -177,11 +171,28 @@
             />
           </template>
 
+          <!-- Accordion -->
+          <template v-else-if="fieldData.type === 'accordion'">sd
+            <ACF_Accordion
+              :item="item"
+              :index="index"
+              :formData="formData"
+              :setFieldEditedStatus="setFieldEditedStatus"
+            />
+            <!-- <ACF_DatePicker
+              :required="fieldData.required"
+              :placeholder="fieldData.placeholder"
+              :modelValue="modelValue"
+              @update:modelValue="handleFieldChange($event)"
+            /> -->
+          </template>
+
           <!-- Unknown type -->
           <template v-else>
             <p class="text-sm text-gray-500">
               Unbekannter Feldtyp: {{ fieldData.type }}
             </p>
+            <!-- <p>{{ formData }}</p> -->
           </template>
         </div>
 
@@ -318,7 +329,7 @@ const checkConditionalLogic = () => {
 
 if (props.fieldData.conditional_logic) {
   watch(
-    () => props.formData,
+    () => props?.formData,
     (newVal) => {
       const metAllConditions = checkConditionalLogic();
 

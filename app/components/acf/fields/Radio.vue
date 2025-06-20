@@ -2,12 +2,13 @@
   <URadioGroup
     :items="choices"
     :modelValue="modelValue"
-    :orientation="layout"
+    :orientation_="layout"
+    orientation="vertical"
     :required="Boolean(required)"
     variant="card"
     @update:modelValue="emit('update:modelValue', $event)"
     :ui="{
-      item: 'has-data-[state=checked]:ring-2 has-data-[state=checked]:ring-primary ring-inset transition',
+      item: 'transition-all cursor-pointer hover:border-primary/80 has-data-[state=checked]:ring-2 has-data-[state=checked]:ring-primary ring-inset transition',
     }"
   />
 </template>
