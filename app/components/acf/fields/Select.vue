@@ -8,6 +8,7 @@
       class="w-full"
       :modelValue="modelValue"
       @update:modelValue="emit('update:modelValue', $event)"
+      :disabled="disabled"
     />
     <UButton
       v-if="allowNull"
@@ -34,6 +35,7 @@ const props = defineProps<{
   required?: boolean | number;
   multiple?: boolean | number | string;
   allowNull?: boolean | number | string;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);

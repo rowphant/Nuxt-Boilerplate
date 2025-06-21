@@ -6,15 +6,15 @@
       :key="item"
       class="grow shrink-0"
     >
-      <UFormField v-if="['d', 'D'].includes(item)" label="Day">
+      <UFormField v-if="['d', 'D'].includes(item)" label="Day" :disabled="disabled">
         <USelectMenu :items="days" class="w-full"/>
       </UFormField>
 
-      <UFormField v-if="['m', 'M'].includes(item)" label="Month">
+      <UFormField v-if="['m', 'M'].includes(item)" label="Month" :disabled="disabled">
         <USelectMenu :items="months" class="w-full" />
       </UFormField>
 
-      <UFormField v-if="['y', 'Y'].includes(item)" label="Year">
+      <UFormField v-if="['y', 'Y'].includes(item)" label="Year" :disabled="disabled">
         <USelectMenu :items="years" class="w-full" />
       </UFormField>
     </div>
@@ -58,12 +58,9 @@ const df = new DateFormatter("en-US", {
 
 const props = defineProps<{
   modelValue?: any;
-  options: Array<{
-    label: string;
-    value: string;
-  }>;
   layout?: "horizontal" | "vertical";
   display_format?: string;
+  disabled?: boolean;
 }>();
 
 // WICHTIG: Synchronisiere den internen Wert mit dem modelValue Prop

@@ -5,7 +5,7 @@
         v-if="key === 'conditional_logic'"
         class="flex gap-2 bg-white/[2.5%]"
       >
-        <div class="font-semibold min-w-30 p-1">{{ key }}:</div>
+        <div class="font-semibold min-w-30 p-1">{{ key }}</div>
         <div>
           <UBadge color="neutral" variant="subtle"
             >{{ fieldData.conditional_logic.length }} condition(s)</UBadge
@@ -84,8 +84,24 @@
           <p>No specific conditional logic for this field.</p>
         </div>
       </div>
+      <div v-if="key === 'content' || key === 'fields'" class="flex gap-2 bg-white/[2.5%]">
+        <div class="font-semibold min-w-30 p-1">{{ key }}</div>
+        <div class="p-1 relative w-full">
+          <div
+            class="truncated-text text-xs w-full flex flex-col items-start gap-1"
+          >
+            <UBadge color="neutral" variant="subtle"
+              >Child items: {{ value.length }}</UBadge
+            >
+            {{
+              JSON.stringify(value || "").slice(0, 100) +
+              (JSON.stringify(value || "").length > 100 ? "..." : "")
+            }}
+          </div>
+        </div>
+      </div>
       <div v-else class="flex gap-2 bg-white/[2.5%]">
-        <div class="font-semibold min-w-30 p-1">{{ key }}:</div>
+        <div class="font-semibold min-w-30 p-1">{{ key }}</div>
         <div class="p-1">
           <UBadge color="neutral" variant="subtle">{{ value || "-" }}</UBadge>
         </div>
@@ -98,3 +114,5 @@ const props = defineProps<{
   fieldData: Record<string, any> | null;
 }>();
 </script>
+
+<style scoped></style>

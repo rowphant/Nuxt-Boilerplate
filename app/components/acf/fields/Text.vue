@@ -8,6 +8,7 @@
       :required="Boolean(required)"
       :maxlength="Number(maxLength) || undefined"
       :ui="{ trailing: 'pointer-events-none' }"
+      :disabled="disabled"
     >
     </UInput>
 
@@ -32,6 +33,7 @@ defineProps<{
   required?: boolean | number;
   placeholder?: string;
   maxLength?: number | string;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);

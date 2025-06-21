@@ -5,9 +5,9 @@
         <div v-for="(item, index) in processedFields" :key="index">
           <div v-if="item.type === 'accordion'">
             <ACF_Accordion
-              :item="item"
-              :index="index"
               :formData="formData"
+              :index="index"
+              :fieldData="item"
               :setFieldEditedStatus="setFieldEditedStatus"
             />
           </div>
@@ -18,8 +18,26 @@
               :formData="formData"
               v-model="formData[item.key].value"
               @update:isEdited="setFieldEditedStatus(item.key, $event)"
-              :dev="true"
+              :dev="devMode"
             />
+          </div>
+
+          <!-- Field data -->
+          <div class="w-full hidden_" v-if="devMode">
+            <UAccordion
+              :items="accItems"
+              :ui="{
+                trigger: 'p-2 cursor-pointer text-xs',
+                item: 'border last:border transition data-[state=open]:border-primary data-[state=closed]:border-muted rounded',
+                header: 'data-[state=open]:border-b border-muted',
+              }"
+            >
+              <template #content>
+                <!-- {{ item }} -->
+                <!-- {{ item?.conditional_logic }} -->
+                <ConditionalLogicDetails :fieldData="item" />
+              </template>
+            </UAccordion>
           </div>
         </div>
       </div>
@@ -45,8 +63,10 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted } from "vue";
-import AcfField from "./AcfField.vue";
+import type { AccordionItem } from "@nuxt/ui";
+import AcfField from "@/components/acf/AcfField.vue";
 import ACF_Accordion from "@/components/acf/fields/Accordion.vue";
+import ConditionalLogicDetails from "@/components/acf/ConditionalLogic.Details.vue";
 
 const props = defineProps<{
   logic: {
@@ -55,6 +75,14 @@ const props = defineProps<{
   fields: Record<string, any> | Array<Record<string, any>>;
   callback: (data: any) => void;
 }>();
+
+const devMode = false;
+const accItems = [
+  {
+    label: "Field details",
+    // icon: "i-lucide-smile",
+  },
+] satisfies AccordionItem[];
 
 // Der Typ für formData muss das verschachtelte Objekt widerspiegeln
 const formData = ref<

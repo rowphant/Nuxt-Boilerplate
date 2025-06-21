@@ -6,7 +6,7 @@
     :required="Boolean(required)"
     variant="card"
     @update:modelValue="handleUpdate"
-    
+    :disabled="disabled"
     :ui="{
       item: 'transition-all cursor-pointer hover:border-primary/80 has-data-[state=checked]:ring-2 has-data-[state=checked]:ring-primary ring-inset transition',
     }"
@@ -21,6 +21,7 @@ const props = defineProps<{
   choices?: Array<{ label: string; value: string | number }>;
   layout?: "horizontal" | "vertical";
   required?: boolean | number;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
