@@ -10,6 +10,7 @@
       :placeholder="placeholder || 'Enter a number'"
       :required="Boolean(required)"
       class="w-full font-semibold"
+      :disabled="disabled"
     />
     {{ min.length > 0 ? Number(min) : undefined }}
   </div>
@@ -25,6 +26,7 @@ const props = defineProps<{
   min?: number | string;
   max?: number | string;
   orientation?: "horizontal" | "vertical";
+  disabled?: boolean;
 }>();
 
 // WIP: Min and Max are not working...

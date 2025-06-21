@@ -13,27 +13,16 @@
     </UFormField>
 
     <div v-for="acfFieldGroup in acfFieldGroups" :key="acfFieldGroup.id">
-      <div
-        class="rounded-lg border border-muted/50 p-4 flex flex-col items-start gap-4"
-      >
-        <UBadge color="neutral" variant="outline">
-          <div class="text-muted">Field group:</div>
-          <div>{{ acfFieldGroup.title }}</div>
-        </UBadge>
-        <div class="w-full">
-          <AcfFields
-            :logic="acfFieldGroup"
-            :fields="post.acf"
-            :callback="acfFieldsCallback"
-          />
-        </div>
-      </div>
+      <AcfFieldGroup
+        :acfFieldGroup="acfFieldGroup"
+        :post="post"
+        :acfFieldsCallback="acfFieldsCallback" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { ref, watch } from "vue";
-
+import AcfFieldGroup from "./acf/AcfFieldGroup.vue";
 const props = defineProps<{
   post?: any;
   callback?: (data: any) => void;
@@ -53,7 +42,6 @@ type FormData = {
 
 // console.log("props.post: ", props.post);
 
-
 const formData = ref<FormData>({});
 
 const handleFieldChange = (key: string, $event: any) => {
@@ -61,10 +49,16 @@ const handleFieldChange = (key: string, $event: any) => {
     formData.value = {};
   }
 
-  console.log("initial Value: ", initialValue.value[key]?.rendered || initialValue.value[key]);
-  console.log("props.post initial Value: ", props.post[key]?.rendered || props.post[key]);
-  
-  console.log("post.title.rendered: ", props.post.title.rendered)
+  console.log(
+    "initial Value: ",
+    initialValue.value[key]?.rendered || initialValue.value[key]
+  );
+  console.log(
+    "props.post initial Value: ",
+    props.post[key]?.rendered || props.post[key]
+  );
+
+  console.log("post.title.rendered: ", props.post.title.rendered);
   formData.value[key] = $event;
 };
 

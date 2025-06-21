@@ -2,7 +2,7 @@
   <div
     :class="[
       'transition border border-muted rounded p-4 space-y-2 bg-(--color-navbar)/30 flex flex-col items-start gap-4',
-      { 'opacity-50': props.fieldData.conditional_logic && !conditionsMet },
+      { 'opacity-30': props.fieldData.conditional_logic && !conditionsMet },
     ]"
   >
     <div class="w-full flex flex-row items-start gap-4">
@@ -13,9 +13,7 @@
         <h5 class="text-md grow flex gap-1">
           <div class="w-full flex flex-row gap-1">
             <div v-html="fieldData.label" class="text-primary text-lg" />
-            <div v-if="fieldData.required" class="text-primary font-bold ">
-              
-            </div>
+            <div v-if="fieldData.required" class="text-primary font-bold"></div>
           </div>
           <UTooltip
             v-if="fieldData.conditional_logic"
@@ -70,6 +68,7 @@
               :required="fieldData.required"
               :placeholder="fieldData.placeholder"
               :maxLength="fieldData.maxlength"
+              :disabled="props.fieldData.conditional_logic && !conditionsMet"
               @update:modelValue="handleFieldChange($event)"
             />
           </template>
@@ -84,6 +83,7 @@
               :maxRows="10"
               :autoresize="true"
               :maxLength="fieldData.maxlength"
+              :disabled="fieldData.conditional_logic && !conditionsMet"
               @update:modelValue="handleFieldChange($event)"
             />
           </template>
@@ -99,6 +99,7 @@
                 :min="fieldData?.min"
                 :max="fieldData?.max"
                 :orientation="fieldData?.layout || 'horizontal'"
+                :disabled="fieldData.conditional_logic && !conditionsMet"
                 @update:modelValue="handleFieldChange($event)"
               />
             </div>
@@ -119,6 +120,7 @@
               :required="fieldData.required"
               :returnFormat="fieldData.return_format"
               :save_other_choices="fieldData.save_other_choices"
+              :disabled="fieldData.conditional_logic && !conditionsMet"
               @update:modelValue="handleFieldChange($event)"
             />
           </template>
@@ -134,6 +136,7 @@
               :returnFormat="fieldData.return_format"
               :saveCustom="fieldData.save_custom"
               :toggle="fieldData.toggle"
+              :disabled="fieldData.conditional_logic && !conditionsMet"
               @update:modelValue="handleFieldChange($event)"
             />
           </template>
@@ -147,6 +150,7 @@
               :multiple="fieldData.multiple"
               :allowNull="fieldData.allow_null"
               :modelValue="modelValue"
+              :disabled="fieldData.conditional_logic && !conditionsMet"
               @update:modelValue="handleFieldChange($event)"
             />
           </template>
@@ -157,6 +161,7 @@
               :required="fieldData.required"
               :placeholder="fieldData.placeholder"
               :modelValue="modelValue"
+              :disabled="fieldData.conditional_logic && !conditionsMet"
               @update:modelValue="handleFieldChange($event)"
             />
           </template>
@@ -167,24 +172,9 @@
               :required="fieldData.required"
               :placeholder="fieldData.placeholder"
               :modelValue="modelValue"
+              :disabled="fieldData.conditional_logic && !conditionsMet"
               @update:modelValue="handleFieldChange($event)"
             />
-          </template>
-
-          <!-- Accordion -->
-          <template v-else-if="fieldData.type === 'accordion'">sd
-            <ACF_Accordion
-              :item="item"
-              :index="index"
-              :formData="formData"
-              :setFieldEditedStatus="setFieldEditedStatus"
-            />
-            <!-- <ACF_DatePicker
-              :required="fieldData.required"
-              :placeholder="fieldData.placeholder"
-              :modelValue="modelValue"
-              @update:modelValue="handleFieldChange($event)"
-            /> -->
           </template>
 
           <!-- Unknown type -->
@@ -209,7 +199,7 @@
     </div>
 
     <!-- Field data -->
-    <div class="w-full hidden_" v-if="dev">
+    <!-- <div class="w-full hidden_" v-if="dev">
       <UAccordion
         :items="accItems"
         :ui="{
@@ -222,12 +212,12 @@
           <ConditionalLogicDetails :fieldData="fieldData" />
         </template>
       </UAccordion>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import ConditionalLogicDetails from "./ConditionalLogic.Details.vue";
+// import ConditionalLogicDetails from "./ConditionalLogic.Details.vue";
 import type { AccordionItem } from "@nuxt/ui";
 import ACF_Text from "@/components/acf/fields/Text.vue";
 import ACF_Textarea from "@/components/acf/fields/Textarea.vue";
@@ -273,72 +263,75 @@ interface Condition {
 }
 
 // console.log("props.formData: ", props.formData);
-const checkConditionalLogic = () => {
-  // console.log("Conditional logic: ", props.fieldData.conditional_logic[0][0]);
-  // console.log("props.formData: ", props.formData);
+// const checkConditionalLogic = () => {
+//   // console.log("Conditional logic: ", props.fieldData.conditional_logic[0][0]);
+//   // console.log("props.formData: ", props.formData);
 
-  // Verwende 'some' um zu prüfen, ob irgendeine Bedingungsgruppe zutrifft
-  return props.fieldData.conditional_logic.some((conditionGroup: any) => {
-    // console.log("conditionGroup: ", conditionGroup);
+//   // Verwende 'some' um zu prüfen, ob irgendeine Bedingungsgruppe zutrifft
+//   return props.fieldData.conditional_logic.some((conditionGroup: any) => {
+//     // console.log("conditionGroup: ", conditionGroup);
 
-    // Verwende 'every' um zu prüfen, ob ALLE Bedingungen INNERHALB einer Gruppe zutreffen
-    const groupComply = conditionGroup.every((condition: Condition) => {
-      // console.log("condition: ", condition);
-      const fieldValue = props.formData[condition.field].value;
-      let comply = false;
+//     // Verwende 'every' um zu prüfen, ob ALLE Bedingungen INNERHALB einer Gruppe zutreffen
+//     const groupComply = conditionGroup.every((condition: Condition) => {
+//       // console.log("condition: ", condition);
+//       const fieldValue = props.formData[condition.field].value;
+//       let comply = false;
 
-      switch (condition.operator) {
-        case "!=empty":
-          comply =
-            fieldValue !== "" &&
-            fieldValue !== null &&
-            typeof fieldValue !== "undefined";
-          break;
-        case "==empty": //
-          comply =
-            String(fieldValue) === "" ||
-            String(fieldValue) === null ||
-            typeof fieldValue === "undefined";
-          break;
-        case "==contains": //
-          comply = String(fieldValue).includes(String(condition.value));
-          break;
-        case "==": //
-          return String(fieldValue) === String(condition.value);
-        case "!=": //
-          return String(fieldValue) !== String(condition.value);
-        case ">":
-          return Number(fieldValue) > Number(condition.value);
-        case "<":
-          return Number(fieldValue) < Number(condition.value);
-        case ">=":
-          return Number(fieldValue) >= Number(condition.value);
-        case "<=":
-          return Number(fieldValue) <= Number(condition.value);
-        default:
-          comply = false; // Standardfall
-          break;
-      }
-      return comply;
-    });
+//       switch (condition.operator) {
+//         case "!=empty":
+//           comply =
+//             fieldValue !== "" &&
+//             fieldValue !== null &&
+//             typeof fieldValue !== "undefined";
+//           break;
+//         case "==empty": //
+//           comply =
+//             String(fieldValue) === "" ||
+//             String(fieldValue) === null ||
+//             typeof fieldValue === "undefined";
+//           break;
+//         case "==contains": //
+//           comply = String(fieldValue).includes(String(condition.value));
+//           break;
+//         case "==": //
+//           return String(fieldValue) === String(condition.value);
+//         case "!=": //
+//           return String(fieldValue) !== String(condition.value);
+//         case ">":
+//           return Number(fieldValue) > Number(condition.value);
+//         case "<":
+//           return Number(fieldValue) < Number(condition.value);
+//         case ">=":
+//           return Number(fieldValue) >= Number(condition.value);
+//         case "<=":
+//           return Number(fieldValue) <= Number(condition.value);
+//         default:
+//           comply = false; // Standardfall
+//           break;
+//       }
+//       return comply;
+//     });
 
-    // console.log("complyGroups: ", groupComply);
-    return groupComply;
-  });
-};
+//     // console.log("complyGroups: ", groupComply);
+//     return groupComply;
+//   });
+// };
 
 if (props.fieldData.conditional_logic) {
   watch(
     () => props?.formData,
     (newVal) => {
-      const metAllConditions = checkConditionalLogic();
+      const { checkConditionalLogic } = useACF();
+      const metAllConditions = checkConditionalLogic(
+        props.formData,
+        props.fieldData.conditional_logic
+      );
 
       if (metAllConditions) {
         conditionsMet.value = true;
       } else {
         conditionsMet.value = false;
       }
-      // console.log("metAllConditions: ", metAllConditions);
     },
     {
       immediate: true,

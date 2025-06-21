@@ -11,6 +11,7 @@
       class="w-full"
       :ui="{ trailing: 'pointer-events-none' }"
       :trailing="Boolean(maxLength || trailing)"
+      :disabled="disabled"
     >
   </UTextarea>
   <div class="w-full flex flex-row justify-end">

@@ -3,8 +3,8 @@
     <UAccordion
       :items="[
         {
-          label: `${item.label} ${
-            Boolean(item.conditional_logic) ? '*' : ''
+          label: `${fieldData.label} ${
+            Boolean(fieldData.conditional_logic) ? '*' : ''
           }`,
           icon: 'i-lucide-box',
         },
@@ -16,16 +16,15 @@
         header: 'sticky -top-6 z-[11] rounded backdrop-blur-sm bg-muted/50',
         content: 'p-4 z-[10] relative ',
       }"
+      :disabled="props.fieldData.conditional_logic && !conditionsMet"
+      v-model="active"
     >
-      <!-- <template #trigger>
-        <div class="flex items-center gap-2">
-          {{ item.label }}sd
-        </div>
-      </template> -->
-
       <template #content>
         <div class="space-y-2 z-[10] relative">
-          <div v-for="(field, fieldIndex) in item.content" :key="fieldIndex">
+          <div
+            v-for="(field, fieldIndex) in fieldData.content"
+            :key="fieldIndex"
+          >
             <AcfField
               :fieldData="field"
               :index="fieldIndex"
@@ -41,8 +40,9 @@
   </div>
 </template>
 <script lang="ts" setup>
+import type { AccordionItem } from "@nuxt/ui";
 const props = defineProps<{
-  item: {
+  fieldData: {
     label: string;
     content: Record<string, any>[];
     conditional_logic?: any;
@@ -51,5 +51,41 @@ const props = defineProps<{
   formData: Record<string, { value: any; isEdited: boolean }>;
   // NEU: Empfängt die setFieldEditedStatus Funktion
   setFieldEditedStatus: (key: string, isEdited: boolean) => void;
+  active?: string;
+  closeOnDisable?: boolean;
 }>();
+
+const active = ref(props.active || "");
+const conditionsMet = ref(false);
+
+if (props.fieldData.conditional_logic) {
+  watch(
+    () => props?.formData,
+    (newVal) => {
+      const { checkConditionalLogic } = useACF();
+      const metAllConditions = checkConditionalLogic(
+        props.formData,
+        props.fieldData.conditional_logic
+      );
+
+      if (metAllConditions) {
+        conditionsMet.value = true;
+      } else {
+        conditionsMet.value = false;
+        if (
+          props.closeOnDisable !== false ||
+          props.closeOnDisable === undefined ||
+          props.closeOnDisable === null ||
+          !props.closeOnDisable
+        ) {
+          active.value = "";
+        }
+      }
+    },
+    {
+      immediate: true,
+      deep: true,
+    }
+  );
+}
 </script>
