@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto p-4 flex flex-col gap-4">
+  <div class="container mx-auto p-4 flex flex-col gap-8">
     <h1 class="text-3xl font-bold">Wordpress Posts</h1>
 
     <div class="flex flex-col gap-1">
@@ -80,18 +80,18 @@
     </div>
 
     <!-- Results -->
-    <ul v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-2">
+    <ul v-else class="grid grid-cols-1 gap-2">
       <li v-for="post in posts.items" :key="post.id">
         <PostListItem :post="post" />
       </li>
     </ul>
 
     <!-- Pagination -->
-    <div v-if="postsMeta && postsMeta.totalPages > 1" class="flex justify-end">
+    <div v-if="!pending && postsMeta && postsMeta.totalPages > 1" class="flex justify-center rounded-lg bg-navbar/80 p-4">
       <UPagination
-        v-model="postsMeta.currentPage"
+        v-model:page="postsMeta.currentPage"
         :total="postsMeta.totalPages"
-        :items-per-page="postsMeta.perPage"
+        :items-per-page="postsPerPage"
         show-edges
         variant="link"
         @update:page="paginate($event)"
@@ -122,7 +122,8 @@ const selectedPostType = ref<{
 }>();
 const searchText = ref<string>("");
 const currentPage = ref(1);
-const postsPerPage = 10;
+const totalPages = ref(0);
+const postsPerPage = 5;
 
 // --- Post-Typen laden (für die Dropdown-Liste) ---
 const {
@@ -240,6 +241,8 @@ const {
 
 // --- Pagination Meta Daten ---
 const postsMeta = computed(() => {
+  console.log("computed postsMeta: ", posts.value);
+  console.log("currentPage: ", currentPage.value);
   // Sicherstellen, dass posts.value existiert und pagination-Daten hat
   if (posts.value && posts.value.pagination) {
     return {
