@@ -59,22 +59,23 @@ export const useWordpress = () => {
     }
   };
 
+  const createQueryString = (params) => {
+    return params
+      .map(
+        (param) =>
+          `${encodeURIComponent(param[0])}=${encodeURIComponent(param[1])}`
+      )
+      .join("&");
+  };
+
   const fetchWpPosts = async (
     postType: string,
     params?: [string, string][]
   ) => {
     const { $apiFetch } = useNuxtApp();
-    const queryString = params
-      ? params
-          .map(
-            (param) =>
-              `${encodeURIComponent(param[0])}=${encodeURIComponent(
-                param[1]
-              )}`
-          )
-          .join("&")
-      : "";
-          
+    const queryString = createQueryString(params);
+
+
     try {
       const data = await $apiFetch(
         `/wp-json/wp/v2/${postType}${queryString ? "?" + queryString : ""}`,
@@ -125,16 +126,18 @@ export const useWordpress = () => {
   const getAcfFields = async (postType: string, fieldGroupKey: string) => {
     const { $apiFetch } = useNuxtApp();
     try {
-    const response = await $apiFetch(
-      `/wp-json/wp/v2/acf-fields/post-type/${postType}?field_group_key=${fieldGroupKey || ''}`,
-      {
-        method: "GET",
-      }
-    );
-    return response;
-  } catch (error) {
-    console.error("Error fetching conditional logic:", error);
-  }
+      const response = await $apiFetch(
+        `/wp-json/wp/v2/acf-fields/post-type/${postType}?field_group_key=${
+          fieldGroupKey || ""
+        }`,
+        {
+          method: "GET",
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error("Error fetching conditional logic:", error);
+    }
   };
 
   return {
@@ -145,6 +148,6 @@ export const useWordpress = () => {
     fetchWpPost,
     fetchWpPosts,
     searchWpPosts,
-    getAcfFields
+    getAcfFields,
   };
 };

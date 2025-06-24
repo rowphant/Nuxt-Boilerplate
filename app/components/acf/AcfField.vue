@@ -47,7 +47,7 @@
 
       <!-- Form field -->
       <div
-        class="flex flex-row gap-2 items-baseline w-full bg-muted/50 light:border border-muted rounded-xl p-2"
+        class="border flex flex-row gap-2 items-baseline w-full max-w-full bg-muted/50 light:border border-muted rounded-xl p-2"
       >
         <UBadge
           v-if="fieldData.prepend"
@@ -59,7 +59,7 @@
           {{ fieldData.prepend }}
         </UBadge>
 
-        <div class="grow max-w-full">
+        <div class="grow">
           <!-- Text -->
           <template v-if="fieldData.type === 'text'">
             <!-- v-bind="fieldData" -->
@@ -158,9 +158,9 @@
           <!-- True False / Switch -->
           <template v-else-if="fieldData.type === 'true_false'">
             <ACF_Switch
-              :required="fieldData.required"
-              :placeholder="fieldData.placeholder"
               :modelValue="modelValue"
+              :placeholder="fieldData.placeholder"
+              :required="fieldData.required"
               :disabled="fieldData.conditional_logic && !conditionsMet"
               @update:modelValue="handleFieldChange($event)"
             />
@@ -169,9 +169,32 @@
           <!-- Date picker -->
           <template v-else-if="fieldData.type === 'date_picker'">
             <ACF_DatePicker
-              :required="fieldData.required"
-              :placeholder="fieldData.placeholder"
               :modelValue="modelValue"
+              :placeholder="fieldData.placeholder"
+              :required="fieldData.required"
+              :disabled="fieldData.conditional_logic && !conditionsMet"
+              :displayFormat="fieldData.display_format"
+              @update:modelValue="handleFieldChange($event)"
+            />
+          </template>
+
+          <!-- Post object -->
+          <template v-else-if="fieldData.type === 'post_object'">
+            <ACF_PostObject
+              :modelValue="modelValue"
+              :placeholder="fieldData.placeholder"
+              :required="fieldData.required"
+              :disabled="fieldData.conditional_logic && !conditionsMet"
+              @update:modelValue="handleFieldChange($event)"
+            />
+          </template>
+
+          <!-- Relationship -->
+          <template v-else-if="fieldData.type === 'relationship'">
+            <ACF_Relationship
+              :modelValue="modelValue"
+              :placeholder="fieldData.placeholder"
+              :required="fieldData.required"
               :disabled="fieldData.conditional_logic && !conditionsMet"
               @update:modelValue="handleFieldChange($event)"
             />
@@ -227,6 +250,8 @@ import ACF_Radio from "@/components/acf/fields/Radio.vue";
 import ACF_Switch from "@/components/acf/fields/Switch.vue";
 import ACF_Checkbox from "@/components/acf/fields/Checkbox.vue";
 import ACF_DatePicker from "@/components/acf/fields/DatePicker.vue";
+import ACF_PostObject from "@/components/acf/fields/PostObject.vue";
+import ACF_Relationship from "@/components/acf/fields/Relationship.vue";
 
 const props = defineProps<{
   fieldData: Record<string, any>; // Besser den Typ als Record<string, any> definieren
@@ -348,11 +373,15 @@ const handleFieldChange = (newValue: any) => {
   // Setze isEdited auf true, wenn sich der Wert vom initialen Wert unterscheidet
   // Beachte, dass dies nur für einfache Typen funktioniert. Für Objekte/Arrays
   // bräuchtest du eine tiefere Gleichheitsprüfung.
+  // console.log("newValue: ", newValue);
+  // console.log("initialValue.value: ", initialValue.value);
+
   if (newValue !== initialValue.value) {
     isEdited.value = true;
   } else {
     isEdited.value = false; // Zurücksetzen, wenn der Wert wieder initial ist
   }
+
   // Emittiere den isEdited Status nach oben
   emit("update:isEdited", isEdited.value);
 };

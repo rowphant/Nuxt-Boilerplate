@@ -16,7 +16,7 @@
         header: 'sticky -top-6 z-[11] rounded backdrop-blur-sm bg-muted/50',
         content: 'p-4 z-[10] relative ',
       }"
-      :disabled="props.fieldData.conditional_logic && !conditionsMet"
+      :disabled="Boolean(props.fieldData.conditional_logic && !conditionsMet)"
       v-model="active"
     >
       <template #content>

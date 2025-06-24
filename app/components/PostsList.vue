@@ -105,7 +105,11 @@ import { ref, computed, watch, onMounted } from "vue";
 import PostListItem from "@/components/PostListItem.vue";
 import LoadingIndicator from "@/components/LoadingIndicator.vue";
 
-const { fetchWpTypes, fetchWpPosts, searchWpPosts } = useWordpress();
+const { fetchWpTypes, fetchWpPosts } = useWordpress();
+
+const props = defineProps({
+  postType: String,
+});
 
 // --- Zustand für die Filter ---
 // Wichtig: Initialisiere mit einem leeren String oder einem bekannten Standard-Slug (z.B. 'post')
@@ -118,14 +122,7 @@ const selectedPostType = ref<{
 }>();
 const searchText = ref<string>("");
 const currentPage = ref(1);
-const postsPerPage = 2;
-
-// const paginate = (page: number) => {
-//   console.log("paginate: ", page);
-//   //   postsMeta.value.currentPage = page;
-//   currentPage.value = page;
-//   refreshPosts();
-// };
+const postsPerPage = 10;
 
 // --- Post-Typen laden (für die Dropdown-Liste) ---
 const {
@@ -140,12 +137,13 @@ const {
     // Setze einen Standard-Post-Typ, z.B. 'post'
     if (!selectedPostType.value && data && data.post) {
       // Überprüfe ob 'post' existiert
-      selectedPostType.value = { label: "Post", value: "post" };
-    } else if (!selectedPostType.value && Object.values(data).length > 0) {
-      // Fallback: Setze den ersten verfügbaren Typ als Standard
-      const firstType: any = Object.values(data)[0];
-      selectedPostType.value = { label: firstType.name, value: firstType.slug };
+      // selectedPostType.value = { label: "Post", value: "post" };
+      selectedPostType.value = {
+        label: data?.[props.postType].name,
+        value: data?.[props.postType].slug,
+      };
     }
+
     return data;
   },
   {
@@ -156,18 +154,6 @@ const {
     },
   }
 );
-
-// const postsMeta = computed(() => {
-//   if (posts?.value) {
-//     return {
-//       perPage: 2,
-//       totalPosts: posts?.value?.pagination?.totalPosts,
-//       totalPages: posts?.value?.pagination?.totalPages,
-//       currentPage: currentPage.value,
-//     };
-//   }
-//   return {};
-// });
 
 // Verfügbare Post-Typen für die USelectMenu Komponente
 const availablePostTypes = computed(() => {
@@ -183,7 +169,12 @@ const availablePostTypes = computed(() => {
     );
 
     if (!selectedPostType.value) {
-      selectedPostType.value = { label: "Post", value: "post" };
+      const foundType = mappedTypes.find(
+        (type) => type.value === props.postType
+      );
+      if (foundType) {
+        selectedPostType.value = foundType;
+      }
     }
 
     // console.log("Gemappte Post Types für UI:", mappedTypes);
@@ -218,7 +209,7 @@ const {
       return [];
     }
 
-    console.log("postTypesRawData.value: ", postTypesRawData.value);
+    // console.log("postTypesRawData.value: ", postTypesRawData.value);
 
     try {
       const postsData = await fetchWpPosts(
@@ -226,7 +217,8 @@ const {
         [
           ["page", currentPage.value.toString()],
           ["per_page", postsPerPage.toString()],
-          ["search", currentSearchText],
+          ["acf_format", "standard"],
+          // ["search", currentSearchText || ""],
         ]
       );
 
@@ -247,7 +239,6 @@ const {
 );
 
 // --- Pagination Meta Daten ---
-// Diese computed Property kann jetzt auf `posts` zugreifen, da `posts` bereits definiert ist.
 const postsMeta = computed(() => {
   // Sicherstellen, dass posts.value existiert und pagination-Daten hat
   if (posts.value && posts.value.pagination) {

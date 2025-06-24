@@ -72,9 +72,11 @@ const props = defineProps<{
   logic: {
     fields: Array<Record<string, any>>;
   };
-  fields: Record<string, any> | Array<Record<string, any>>;
+  fields?: Record<string, any> | Array<Record<string, any>>;
   callback: (data: any) => void;
 }>();
+
+console.log("props.fields: ", props.logic.fields);
 
 const devMode = false;
 const accItems = [
@@ -194,7 +196,7 @@ onMounted(() => {
   if (props.logic && props.logic.fields) {
     processFields(props.logic.fields);
   }
-  console.log("processedFields:", processedFields.value);
+  // console.log("processedFields:", processedFields.value);
 });
 
 // Felder erneut verarbeiten, wenn sich die 'logic.fields' Prop ändert
@@ -225,20 +227,29 @@ watch(
 
     const editedFields = Object.fromEntries(
       Object.entries(formData.value)
-        .filter(([, data]) => data.isEdited)
+        // .filter(([, data]) => data.isEdited)
+        .filter(([, data]) => data)
         // .map(([key, data]) => [key, data.value])
         .map(([key, data]) => {
+          const oldValue = props.fields?.[data.name];
+          const newValue = data.value;
+
           return [
             key,
+            // data
             {
               // key: key,
               name: data.name,
               value: data.value,
-              // isEdited: data.isEdited,
+              // oldValue,
+              // newValue,
+              isEdited: data.isEdited,
             },
           ];
         })
-    );
+    ) as Record<string, { name: string; value: any; isEdited: boolean }>;
+
+    console.log("editedFields: ", editedFields);
 
     // console.log("Edited fields:", editedFields);
     props.callback({ editedFields: editedFields });

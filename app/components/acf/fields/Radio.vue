@@ -5,7 +5,7 @@
     :orientation_="layout"
     orientation="vertical"
     :required="Boolean(required)"
-    :disabled="disabled"
+    :disabled="Boolean(disabled)"
     variant="card"
     @update:modelValue="emit('update:modelValue', $event)"
     :ui="{
@@ -23,7 +23,7 @@ const props = defineProps<{
   choices?: Array<{ label: string; value: string | number }>;
   layout?: "horizontal" | "vertical";
   required?: boolean | number;
-  disabled?: boolean;
+  disabled?: boolean | number;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);

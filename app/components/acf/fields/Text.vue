@@ -8,8 +8,8 @@
       :required="Boolean(required)"
       :maxlength="Number(maxLength) || undefined"
       :ui="{ trailing: 'pointer-events-none' }"
-      :disabled="disabled"
-    >
+      :disabled="Boolean(disabled)"
+      >
     </UInput>
 
     <div class="w-full flex flex-row justify-end">
@@ -33,7 +33,7 @@ defineProps<{
   required?: boolean | number;
   placeholder?: string;
   maxLength?: number | string;
-  disabled?: boolean;
+  disabled?: boolean | number;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
